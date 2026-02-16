@@ -11,6 +11,7 @@
         {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'AD' }}
       </v-avatar>
     </v-app-bar>
+    
     <v-navigation-drawer
       v-model="drawer"
       :rail="rail"
@@ -19,63 +20,88 @@
       @click="rail = false"
     >
       <v-list density="comfortable" nav>
+        <!-- Admin Profile -->
         <v-list-item
           prepend-icon="mdi-account-details"
-          title="0. Admin Profile"
+          title="Admin Profile"
           :active="currentView === 'profile'"
           @click="currentView = 'profile'"
           rounded="lg"
         />
+
+        <!-- Category Tables (Expandable Group) -->
+        <v-list-group value="categories">
+          <template v-slot:activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              prepend-icon="mdi-table-multiple"
+              title="Category Tables"
+              rounded="lg"
+            />
+          </template>
+
+          <v-list-item
+            prepend-icon="mdi-palm-tree"
+            title="Vacations"
+            :active="currentView === 'vacations'"
+            @click="currentView = 'vacations'"
+            rounded="lg"
+            class="pl-8"
+          />
+          <v-list-item
+            prepend-icon="mdi-bus"
+            title="Transit"
+            :active="currentView === 'transit'"
+            @click="currentView = 'transit'"
+            rounded="lg"
+            class="pl-8"
+          />
+          <v-list-item
+            prepend-icon="mdi-account-group"
+            title="Meeting"
+            :active="currentView === 'meeting'"
+            @click="currentView = 'meeting'"
+            rounded="lg"
+            class="pl-8"
+          />
+          <v-list-item
+            prepend-icon="mdi-room-service"
+            title="Services"
+            :active="currentView === 'services'"
+            @click="currentView = 'services'"
+            rounded="lg"
+            class="pl-8"
+          />
+        </v-list-group>
+
+        <!-- User Profiles -->
         <v-list-item
-          prepend-icon="mdi-palm-tree"
-          title="1. Vacations"
-          :active="currentView === 'vacations'"
-          @click="currentView = 'vacations'"
-          rounded="lg"
-        />
-        <v-list-item
-          prepend-icon="mdi-bus"
-          title="2. Transit"
-          :active="currentView === 'transit'"
-          @click="currentView = 'transit'"
-          rounded="lg"
-        />
-        <v-list-item
-          prepend-icon="mdi-account-group"
-          title="3. Meeting"
-          :active="currentView === 'meeting'"
-          @click="currentView = 'meeting'"
-          rounded="lg"
-        />
-        <v-list-item
-          prepend-icon="mdi-room-service"
-          title="4. Services"
-          :active="currentView === 'services'"
-          @click="currentView = 'services'"
-          rounded="lg"
-        />
-        <v-list-item
-          prepend-icon="mdi-chart-bar"
-          title="5. User Profiles"
+          prepend-icon="mdi-account-multiple"
+          title="User Profiles"
           :active="currentView === 'userProfiles'"
           @click="currentView = 'userProfiles'"
           rounded="lg"
         />
+
+        <!-- Contact Messages -->
         <v-list-item
           prepend-icon="mdi-email-outline"
-          title="6. Contact Messages"
+          title="Contact Messages"
           :active="currentView === 'contacts'"
           @click="loadContacts"
           rounded="lg"
         />
+
+        <!-- Click Monitoring -->
         <v-list-item
           prepend-icon="mdi-cursor-default-click"
-          title="7. Click Monitoring"
+          title="Click Monitoring"
           :active="currentView === 'clicks'"
           @click="currentView = 'clicks'"
           rounded="lg"
         />
       </v-list>
+
       <template v-slot:append>
         <div class="pa-2">
           <v-btn
@@ -90,13 +116,15 @@
         </div>
       </template>
     </v-navigation-drawer>
+
     <v-main class="bg-grey-lighten-4">
       <v-container fluid class="pa-6">
         <v-fade-transition hide-on-leave>
           
+          <!-- Admin Profile Section -->
           <v-card v-if="currentView === 'profile'" elevation="2" border>
             <v-toolbar flat color="white">
-              <v-toolbar-title class="text-h6 font-weight-medium">0. Logged-in Admin Details</v-toolbar-title>
+              <v-toolbar-title class="text-h6 font-weight-medium">Logged-in Admin Details</v-toolbar-title>
             </v-toolbar>
             <v-divider />
             <v-table hover>
@@ -137,6 +165,8 @@
               </tbody>
             </v-table>
           </v-card>
+
+          <!-- Vacations Table -->
           <v-card v-if="currentView === 'vacations'" elevation="2" border>
             <v-data-table
               :headers="VacationStore.headers"
@@ -146,7 +176,7 @@
             >
               <template v-slot:top>
                 <v-toolbar flat color="white">
-                  <v-toolbar-title class="text-h6 font-weight-medium">1. Vacations Management</v-toolbar-title>
+                  <v-toolbar-title class="text-h6 font-weight-medium">Vacations Management</v-toolbar-title>
                   <v-spacer />
                   <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="VacationStore.add()">
                     Add Vacation
@@ -168,6 +198,8 @@
               </template>
             </v-data-table>
           </v-card>
+
+          <!-- Transit Table -->
           <v-card v-else-if="currentView === 'transit'" elevation="2" border>
             <v-data-table
               :headers="TransitStore.headers"
@@ -177,7 +209,7 @@
             >
               <template v-slot:top>
                 <v-toolbar flat color="white">
-                  <v-toolbar-title class="text-h6 font-weight-medium">2. Transit Management</v-toolbar-title>
+                  <v-toolbar-title class="text-h6 font-weight-medium">Transit Management</v-toolbar-title>
                   <v-spacer />
                   <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="TransitStore.add()">
                     Add Transit
@@ -199,7 +231,9 @@
               </template>
             </v-data-table>
           </v-card>
-        <v-card v-else-if="currentView === 'meeting'" elevation="2" border>
+
+          <!-- Meeting Table -->
+          <v-card v-else-if="currentView === 'meeting'" elevation="2" border>
             <v-data-table
               :headers="MeetingStore.headers"
               :items="MeetingStore.Meetings || []"
@@ -208,7 +242,7 @@
             >
               <template v-slot:top>
                 <v-toolbar flat color="white">
-                  <v-toolbar-title class="text-h6 font-weight-medium">3. Meeting Management</v-toolbar-title>
+                  <v-toolbar-title class="text-h6 font-weight-medium">Meeting Management</v-toolbar-title>
                   <v-spacer />
                   <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="MeetingStore.add()">
                     Add Meeting
@@ -230,6 +264,8 @@
               </template>
             </v-data-table>
           </v-card>
+
+          <!-- Services Table -->
           <v-card v-else-if="currentView === 'services'" elevation="2" border>
             <v-data-table
               :headers="ServiceStore.headers"
@@ -239,7 +275,7 @@
             >
               <template v-slot:top>
                 <v-toolbar flat color="white">
-                  <v-toolbar-title class="text-h6 font-weight-medium">4. Service Management</v-toolbar-title>
+                  <v-toolbar-title class="text-h6 font-weight-medium">Service Management</v-toolbar-title>
                   <v-spacer />
                   <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="ServiceStore.add()">
                     Add Service
@@ -261,141 +297,95 @@
               </template>
             </v-data-table>
           </v-card>
-          
-          
 
-      <v-card v-else-if="currentView === 'userProfiles'" elevation="2" border>
-    <v-toolbar flat color="white">
-    <v-toolbar-title class="text-h6 font-weight-medium">
-      6. User Profiles
-    </v-toolbar-title>
-  </v-toolbar>
-  <v-divider />
-  <v-data-table
-    :items="users"
-    :headers="userHeaders"
-    :loading="loadingUsers"
-    hover
-  >
-    <template #item.is_active="{ item }">
-      <v-chip
-        :color="item.is_active ? 'green' : 'grey'"
-        size="small"
-      >
-        {{ item.is_active ? 'Active' : 'Inactive' }}
-      </v-chip>
-    </template>
-  </v-data-table>
-</v-card>
+          <!-- User Profiles -->
+          <v-card v-else-if="currentView === 'userProfiles'" elevation="2" border>
+            <v-toolbar flat color="white">
+              <v-toolbar-title class="text-h6 font-weight-medium">User Profiles</v-toolbar-title>
+            </v-toolbar>
+            <v-divider />
+            <v-data-table
+              :items="users"
+              :headers="userHeaders"
+              :loading="loadingUsers"
+              hover
+            >
+              <template #item.is_active="{ item }">
+                <v-chip :color="item.is_active ? 'green' : 'grey'" size="small">
+                  {{ item.is_active ? 'Active' : 'Inactive' }}
+                </v-chip>
+              </template>
+            </v-data-table>
+          </v-card>
 
-<!-- Updated Contacts Section with Reply Functionality -->
-<v-card v-else-if="currentView === 'contacts'" elevation="2" border>
-  <v-toolbar flat color="white">
-    <v-toolbar-title class="text-h6 font-weight-medium">
-      7. Contact Messages
-    </v-toolbar-title>
-    <v-spacer />
-    <v-btn 
-      icon="mdi-refresh" 
-      @click="loadContacts" 
-      :loading="loadingContacts"
-    />
-  </v-toolbar>
-  <v-divider />
-  <v-data-table
-    :headers="contactHeaders"
-    :items="contacts"
-    :item-key="'id'"
-    :loading="loadingContacts"
-    hover
-  >
-    <!-- Status indicator -->
-    <template #item.status="{ item }">
-      <v-chip
-        :color="item.reply ? 'green' : 'orange'"
-        size="small"
-      >
-        {{ item.reply ? 'Replied' : 'Pending' }}
-      </v-chip>
-    </template>
+          <!-- Contact Messages -->
+          <v-card v-else-if="currentView === 'contacts'" elevation="2" border>
+            <v-toolbar flat color="white">
+              <v-toolbar-title class="text-h6 font-weight-medium">Contact Messages</v-toolbar-title>
+              <v-spacer />
+              <v-btn icon="mdi-refresh" @click="loadContacts" :loading="loadingContacts" />
+            </v-toolbar>
+            <v-divider />
+            <v-data-table
+              :headers="contactHeaders"
+              :items="contacts"
+              :item-key="'id'"
+              :loading="loadingContacts"
+              hover
+            >
+              <template #item.status="{ item }">
+                <v-chip :color="item.reply ? 'green' : 'orange'" size="small">
+                  {{ item.reply ? 'Replied' : 'Pending' }}
+                </v-chip>
+              </template>
+              <template #item.message="{ item }">
+                <span>
+                  {{ item.message.length > 60 ? item.message.substring(0, 60) + '...' : item.message }}
+                </span>
+              </template>
+              <template #item.reply="{ item }">
+                <span v-if="item.reply" class="text-grey">
+                  {{ item.reply.length > 40 ? item.reply.substring(0, 40) + '...' : item.reply }}
+                </span>
+                <span v-else class="text-grey-lighten-1">—</span>
+              </template>
+              <template #item.actions="{ item }">
+                <div class="d-flex ga-1">
+                  <v-btn icon="mdi-eye" variant="text" color="blue" size="small" @click="viewContact(item)" />
+                  <v-btn icon="mdi-reply" variant="text" color="green" size="small" @click="openReplyDialog(item)" />
+                  <v-btn icon="mdi-delete" variant="text" color="red" size="small" @click="deleteContact(item.id)" />
+                </div>
+              </template>
+            </v-data-table>
+          </v-card>
 
-    <!-- Truncate long messages -->
-    <template #item.message="{ item }">
-      <span>
-        {{ item.message.length > 60
-          ? item.message.substring(0, 60) + '...'
-          : item.message }}
-      </span>
-    </template>
-
-    <!-- Reply preview -->
-    <template #item.reply="{ item }">
-      <span v-if="item.reply" class="text-grey">
-        {{ item.reply.length > 40
-          ? item.reply.substring(0, 40) + '...'
-          : item.reply }}
-      </span>
-      <span v-else class="text-grey-lighten-1">—</span>
-    </template>
-
-    <!-- Action buttons -->
-    <template #item.actions="{ item }">
-      <div class="d-flex ga-1">
-        <v-btn
-          icon="mdi-eye"
-          variant="text"
-          color="blue"
-          size="small"
-          @click="viewContact(item)"
-        />
-        <v-btn
-          icon="mdi-reply"
-          variant="text"
-          color="green"
-          size="small"
-          @click="openReplyDialog(item)"
-        />
-        <v-btn
-          icon="mdi-delete"
-          variant="text"
-          color="red"
-          size="small"
-          @click="deleteContact(item.id)"
-        />
-      </div>
-    </template>
-  </v-data-table>
-</v-card>
-
-<v-card v-else-if="currentView === 'clicks'" elevation="2" border>
-  <v-toolbar flat color="white">
-    <v-toolbar-title class="text-h6 font-weight-medium">
-      7. Click Monitoring Logs
-    </v-toolbar-title>
-    <v-spacer></v-spacer>
-    <v-btn icon="mdi-refresh" @click="fetchClicks" :loading="loadingClicks"></v-btn>
-  </v-toolbar>
-  <v-divider />
-  
-  <v-data-table
-  :items="clicks"
-  :headers="clickHeaders"
-  :loading="loadingClicks"
-  hover
-  items-per-page="10"
->
-  <template #item.last_clicked_at="{ item }">
-    {{ new Date(item.last_clicked_at).toLocaleString() }}
-  </template>
-</v-data-table>
-
-</v-card>
+          <!-- Click Monitoring -->
+          <v-card v-else-if="currentView === 'clicks'" elevation="2" border>
+            <v-toolbar flat color="white">
+              <v-toolbar-title class="text-h6 font-weight-medium">Click Monitoring Logs</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn icon="mdi-refresh" @click="fetchClicks" :loading="loadingClicks"></v-btn>
+            </v-toolbar>
+            <v-divider />
+            <v-data-table
+              :items="clicks"
+              :headers="clickHeaders"
+              :loading="loadingClicks"
+              hover
+              items-per-page="10"
+            >
+              <template #item.last_clicked_at="{ item }">
+                {{ new Date(item.last_clicked_at).toLocaleString() }}
+              </template>
+            </v-data-table>
+          </v-card>
 
         </v-fade-transition>
       </v-container>
     </v-main>
 
-    <!-- Existing Dialogs -->
+    <!-- All your existing dialogs remain the same -->
+    <!-- Vacation Dialog -->
     <v-dialog v-model="VacationStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">{{ VacationStore.isEditing ? 'Update' : 'Create' }} Vacation</v-card-title>
@@ -416,6 +406,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Transit Dialog -->
     <v-dialog v-model="TransitStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">{{ TransitStore.isEditing ? 'Update' : 'Create' }} Transit</v-card-title>
@@ -436,6 +428,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Meeting Dialog -->
     <v-dialog v-model="MeetingStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">{{ MeetingStore.isEditing ? 'Update' : 'Create' }} Meeting</v-card-title>
@@ -456,6 +450,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Service Dialog -->
     <v-dialog v-model="ServiceStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">{{ ServiceStore.isEditing ? 'Update' : 'Create' }} Service</v-card-title>
@@ -477,7 +473,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- NEW: View Contact Dialog -->
+    <!-- View Contact Dialog -->
     <v-dialog v-model="viewDialog" max-width="700" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5 d-flex align-center">
@@ -533,7 +529,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- NEW: Reply Dialog -->
+    <!-- Reply Dialog -->
     <v-dialog v-model="replyDialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">
@@ -575,7 +571,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import api from "@/services/api";
 import { useVacationStore } from "@/stores/vacation";
 import { useTransitStore } from "@/stores/transit";
@@ -598,12 +594,16 @@ const loadingContacts = ref(false);
 const clicks = ref([]);
 const loadingClicks = ref(false);
 
-// NEW: Reply functionality states
+// Reply functionality states
 const viewDialog = ref(false);
 const replyDialog = ref(false);
 const selectedContact = ref(null);
 const replyText = ref('');
 const sendingReply = ref(false);
+
+const isAdmin = computed(() => {
+  return userProfile.value?.role_id === 1 || userProfile.value?.role_name === 'admin';
+});
 
 const userHeaders = [
   { title: "ID", value: "id" },
@@ -659,7 +659,13 @@ const loadContacts = async () => {
   currentView.value = 'contacts';
   loadingContacts.value = true;
   try {
-    const res = await api.get('/contactuses');
+    let endpoint = '/contactuses';
+    
+    if (!isAdmin.value) {
+      endpoint = '/my-contacts';
+    }
+    
+    const res = await api.get(endpoint);
     contacts.value = res.data.Contactus || []; 
   } catch (err) {
     console.error('Failed to load contacts', err);
@@ -681,28 +687,29 @@ const deleteContact = async (id) => {
   }
 };
 
-// NEW: View contact details
 const viewContact = (contact) => {
   selectedContact.value = contact;
   viewDialog.value = true;
 };
 
-// NEW: Open reply dialog
 const openReplyDialog = (contact) => {
+  if (!isAdmin.value) {
+    alert('Only administrators can send replies');
+    return;
+  }
+  
   selectedContact.value = contact;
   replyText.value = contact.reply || '';
   viewDialog.value = false;
   replyDialog.value = true;
 };
 
-// NEW: Close reply dialog
 const closeReplyDialog = () => {
   replyDialog.value = false;
   replyText.value = '';
   selectedContact.value = null;
 };
 
-// NEW: Send reply
 const sendReply = async () => {
   if (!replyText.value.trim()) {
     alert('Please enter a reply');
@@ -715,7 +722,6 @@ const sendReply = async () => {
       reply: replyText.value
     });
 
-    // Update local contact data
     const index = contacts.value.findIndex(c => c.id === selectedContact.value.id);
     if (index !== -1) {
       contacts.value[index] = response.data.Contactus;
@@ -731,7 +737,6 @@ const sendReply = async () => {
   }
 };
 
-// NEW: Format date helper
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   return new Date(dateString).toLocaleString('en-US', {
@@ -758,9 +763,14 @@ const fetchClicks = async () => {
 onMounted(async () => {
   try {
     await fetchAdminProfile();
-    await fetchUsers();
+    
+    if (isAdmin.value) {
+      await fetchUsers();
+      await fetchClicks();
+    }
+    
     await loadContacts();
-    await fetchClicks();
+    
     await Promise.all([
       VacationStore.getVacations(),
       TransitStore.getTransits(),

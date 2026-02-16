@@ -1,6 +1,25 @@
 <script setup>
-// You can import icons here if using a library like FontAwesome or HeroIcons
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+
 const currentYear = new Date().getFullYear();
+const authStore = useAuthStore();
+const router = useRouter();
+
+// Check if user is authenticated
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+// Logout handler
+const handleLogout = async () => {
+  try {
+    await authStore.logout();
+    router.push('/login'); // Redirect to login page after logout
+  } catch (error) {
+    console.error('Logout failed:', error);
+    // Optionally show error notification to user
+  }
+};
 </script>
 
 <template>
@@ -17,7 +36,10 @@ const currentYear = new Date().getFullYear();
           <a href="https://www.instagram.com/" aria-label="Instagram" class="social-icon">IG</a>
           <a href="https://twitter.com/" aria-label="Twitter" class="social-icon">TW</a>
           <a href="https://www.linkedin.com/" aria-label="LinkedIn" class="social-icon">LI</a>
+          
         </div>
+      <br>
+        <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/specialregistration" />
       </div>
 
       <div class="footer-section links">
@@ -28,6 +50,7 @@ const currentYear = new Date().getFullYear();
           <li><router-link to="/aboutus">About Us</router-link></li>
           <li><router-link to="/contactus">Contact Us</router-link></li>
           <li><router-link to="/blog">Blog</router-link></li>
+                
         </ul>
       </div>
 
@@ -46,6 +69,13 @@ const currentYear = new Date().getFullYear();
         <p>123 Luxury Lane, Suite 500<br>Beverly Hills, CA 90210</p>
         <p class="contact-item"><strong>Phone:</strong> +1 (555) 000-1234</p>
         <p class="contact-item"><strong>Email:</strong> reservations@luxestays.com</p>
+        
+        <!-- Logout Button (only shows when authenticated) -->
+        <div v-if="isAuthenticated" class="logout-section">
+          <button @click="handleLogout" class="logout-btn">
+            <span class="logout-icon">🚪</span> Logout
+          </button>
+        </div>
       </div>
     </div>
 
@@ -171,6 +201,45 @@ const currentYear = new Date().getFullYear();
   margin-top: 10px;
 }
 
+/* Logout Section */
+.logout-section {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+  color: #1a1a1a;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #b8941f 0%, #d4af37 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(212, 175, 55, 0.4);
+}
+
+.logout-icon {
+  font-size: 1.1rem;
+}
+
 /* Bottom Bar */
 .footer-bottom {
   border-top: 1px solid #333;
@@ -203,6 +272,17 @@ const currentYear = new Date().getFullYear();
   }
 
   .social-links {
+    justify-content: center;
+  }
+
+  .logout-section {
+    display: flex;
+    justify-content: center;
+  }
+
+  .logout-btn {
+    width: 100%;
+    max-width: 250px;
     justify-content: center;
   }
 }

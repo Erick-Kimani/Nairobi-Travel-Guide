@@ -16,13 +16,7 @@ const choices = ref([
     link: '/transit'  ,
     image: '/images/Picture 26 .jpg'
   },
-  // {
-  //   id: 3,
-  //   title: 'Bed & Breakfasts',
-  //   description: 'Cozy, personalized lodging with a homey feel.',
-  //   link: '/hotels/bb',
-  //   image: '/images/Picture 27 .jpg'
-  // },
+  
   {
     id: 3,
     title: 'Meeting Rooms',

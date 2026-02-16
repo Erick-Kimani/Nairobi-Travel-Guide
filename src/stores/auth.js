@@ -1,17 +1,19 @@
-import TokenService from '@/services/TokenService'
-import { defineStore } from 'pinia'
+import TokenService from '@/services/TokenService';
+import AuthService from '@/services/authService';
+import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    
-    isAuthenticated: false,
+    isAuthenticated: TokenService.isAuthenticated(),
   }),
   actions: {
-    login() {
-      this.isAuthenticated = true
+    login(tokenData) {
+      TokenService.setToken(tokenData);
+      this.isAuthenticated = true;
     },
-    logout() {
-      this.isAuthenticated = false
+    async logout() {
+      await AuthService.logout();
+      this.isAuthenticated = false;
     },
   },
-})
+});

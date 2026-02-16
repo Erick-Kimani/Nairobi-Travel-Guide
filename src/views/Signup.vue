@@ -2,9 +2,10 @@
   <v-container
     fluid
     class="d-flex flex-column align-center justify-center login-background"
-    style="min-height: 100vh;"
-  >
+    style="min-height: 100vh; background-image: url('public/images/Hotair balloon.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;"
+>
     <v-card class="pa-8 glass-card" elevation="16">
+      <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/specialregistration" />
       <v-card-title class="text-h4 text-center mb-6">
         Create Your Account
       </v-card-title>
@@ -132,8 +133,11 @@ function goToLogin() {
 
 <style scoped>
 .login-background {
-  background: linear-gradient(135deg, #ffccbc, #b39ddb, #ffe0bc);
-  background-attachment: fixed;
+  min-height: 100vh;
+  background-image: url('public/images/Hotair balloon.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .glass-card {

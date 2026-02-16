@@ -1,39 +1,37 @@
 class TokenService {
   static setToken(data) {
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('user', JSON.stringify(data.user))
-    localStorage.setItem('abilities', JSON.stringify(data.abilities))
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('abilities', JSON.stringify(data.abilities));
   }
 
-  static getToken(){
-    return localStorage.getItem('token')
-
-    if(!token || token === 'undefined'|| token === 'null'){
-      return null
-    } 
-    return token 
+  static getToken() {
+    return localStorage.getItem('token');
   }
-  static getUser(){
+
+  static getUser() {
     const user = localStorage.getItem('user');
-    return JSON.parse(user);
+    return user ? JSON.parse(user) : null;
   }
 
-  static logout(){
-    localStorage.clear();
+  static removeToken() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('abilities');
   }
 
-  static isAuthenticated(){
-      return !!this.getToken();
-    }
+  static isAuthenticated() {
+    return !!this.getToken();
+  }
 
-  static getAbilities(){
-    try{
+  static getAbilities() {
+    try {
       const abilities = JSON.parse(localStorage.getItem('abilities'));
-      return Array.isArray(abilities) || typeof abilities === 'object' ? abilities:[];
+      return Array.isArray(abilities) || typeof abilities === 'object' ? abilities : [];
     } catch {
-      return []
+      return [];
     }
   }
-
 }
+
 export default TokenService;

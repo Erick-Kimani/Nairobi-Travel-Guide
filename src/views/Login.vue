@@ -2,8 +2,8 @@
   <v-container
     fluid
     class="d-flex flex-column align-center justify-center login-background"
-    style="min-height: 100vh;"
-  >
+    style="min-height: 100vh; background-image: url('public/images/Hotair balloon.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;"
+>
     <v-card class="pa-8 login-card glass-card" elevation="16">
       <v-card-title class="text-h4 text-center mb-6">
         Secure Login
@@ -111,8 +111,11 @@ function goToSignup() {
 
 <style scoped>
 .login-background {
-  background: linear-gradient(135deg, #ffccbc, #b39ddb, #ffe0bc);
-  background-attachment: fixed;
+  min-height: 100vh;
+  background-image: url('public/images/Hotair balloon.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Glass Card Styling */

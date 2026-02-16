@@ -19,6 +19,7 @@ import Transport from "@/views/Transport.vue"
 import TransportDetails from "@/views/TransportDetails.vue"
 import Vacation from "@/views/Vacation.vue"
 import VacationDetails from "@/views/VacationDetails.vue"
+import SpecialRegistration from "@/views/SpecialRegistration.vue"
 
 // Blog (Landing Page)
 import Blog from "@/components/Blog.vue"
@@ -41,6 +42,16 @@ const routes = [
       hideLayout: true // 🚫 Hide Navbar & Footer
     }
   },
+  {
+    path: "/specialregistration",
+    name: "specialregistration",
+    component: SpecialRegistration,
+    meta: {
+      guestOnly: true,
+      hideLayout: true // 🚫 Hide Navbar & Footer
+    }
+  },
+
   {
     path: "/login",
     name: "login",
@@ -155,7 +166,7 @@ const routes = [
     component: Administrator,
     meta: {
       requiresAuth: true,
-      ability: "admin"
+      ability: "admin" , 
     }
   },
   {
@@ -164,7 +175,7 @@ const routes = [
     component: ClickAnalytics,
     meta: {
       requiresAuth: true,
-      ability: "admin"
+      ability: ["admin", "manager"]
     }
   },
 
@@ -204,7 +215,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.ability) {
     const hasAbility = AuthService.hasAbility(to.meta.ability)
     if (!hasAbility) {
-      alert("You do not have permission to access this page")
+      alert("404 Page Not Found .")
       return next("/home")
     }
   }

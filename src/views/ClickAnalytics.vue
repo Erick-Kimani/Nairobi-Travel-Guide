@@ -4,11 +4,11 @@
       <v-app-bar-nav-icon @click="rail = !rail">
         <v-icon>{{ rail ? 'mdi-menu' : 'mdi-menu-open' }}</v-icon>
       </v-app-bar-nav-icon>
-      <v-toolbar-title class="font-weight-bold">Admin Dashboard</v-toolbar-title>
+      <v-toolbar-title class="font-weight-bold">Analytics Dashboard</v-toolbar-title>
       <v-spacer />
       <v-btn icon="mdi-bell-outline" class="mr-2" />
       <v-avatar color="secondary" size="35" class="mr-4">
-        {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'AD' }}
+        {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'U' }}
       </v-avatar>
     </v-app-bar>
 
@@ -22,23 +22,15 @@
       <v-list density="comfortable" nav>
         <v-list-item
           prepend-icon="mdi-account-details"
-          title="1. Admin Profile"
+          title="1. My Profile"
           :active="currentView === 'profile'"
           @click="currentView = 'profile'"
-          rounded="lg"
-        />
-        
-        <v-list-item
-          prepend-icon="mdi-chart-bar"
-          title="2. User Profiles"
-          :active="currentView === 'userProfiles'"
-          @click="currentView = 'userProfiles'"
           rounded="lg"
         />
       
         <v-list-item
           prepend-icon="mdi-cursor-default-click"
-          title="3. Click Monitoring"
+          title="2. Click Monitoring"
           :active="currentView === 'clicks'"
           @click="currentView = 'clicks'"
           rounded="lg"
@@ -64,10 +56,10 @@
       <v-container fluid class="pa-6">
         <v-fade-transition hide-on-leave>
           
-          <!-- Admin Profile Section -->
+          <!-- User Profile Section -->
           <v-card v-if="currentView === 'profile'" elevation="2" border>
             <v-toolbar flat color="white">
-              <v-toolbar-title class="text-h6 font-weight-medium">0. Logged-in Admin Details</v-toolbar-title>
+              <v-toolbar-title class="text-h6 font-weight-medium">My Profile Details</v-toolbar-title>
             </v-toolbar>
             <v-divider />
             <v-table hover>
@@ -79,7 +71,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>Admin Name</strong></td>
+                  <td><strong>Name</strong></td>
                   <td>{{ userProfile?.name || 'Loading...' }}</td>
                 </tr>
                 <tr>
@@ -101,7 +93,7 @@
                       <v-chip v-for="ability in userProfile?.abilities" :key="ability" size="x-small" color="deep-orange">
                         {{ ability }}
                       </v-chip>
-                      <span v-if="!userProfile?.abilities?.length" class="text-caption text-grey">Default Admin Access</span>
+                      <span v-if="!userProfile?.abilities?.length" class="text-caption text-grey">Default Access</span>
                     </div>
                   </td>
                 </tr>
@@ -109,38 +101,13 @@
             </v-table>
           </v-card>
 
-          <!-- User Profiles Section -->
-          <v-card v-else-if="currentView === 'userProfiles'" elevation="2" border>
-            <v-toolbar flat color="white">
-              <v-toolbar-title class="text-h6 font-weight-medium">
-                6. User Profiles
-              </v-toolbar-title>
-            </v-toolbar>
-            <v-divider />
-            <v-data-table
-              :items="users"
-              :headers="userHeaders"
-              :loading="loadingUsers"
-              hover
-            >
-              <template #item.is_active="{ item }">
-                <v-chip
-                  :color="item.is_active ? 'green' : 'grey'"
-                  size="small"
-                >
-                  {{ item.is_active ? 'Active' : 'Inactive' }}
-                </v-chip>
-              </template>
-            </v-data-table>
-          </v-card>
-
-          <!-- Click Monitoring Section - NEW GROUPED BY SERVICE -->
+          <!-- Click Monitoring Section - GROUPED BY SERVICE -->
           <div v-else-if="currentView === 'clicks'">
             <!-- Summary Card -->
             <v-card elevation="2" border class="mb-4">
               <v-toolbar flat color="white">
                 <v-toolbar-title class="text-h6 font-weight-medium">
-                  7. Click Monitoring - Overview
+                  Click Monitoring - Overview
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn 
@@ -268,20 +235,9 @@ import api from "@/services/api";
 const drawer = ref(true);
 const rail = ref(false); 
 const currentView = ref("profile");
-const users = ref([]);
 const clicks = ref([]);
 const loadingClicks = ref(false);
-const loadingUsers = ref(false);
 const userProfile = ref(null);
-
-const userHeaders = [
-  { title: "ID", value: "id" },
-  { title: "Name", value: "name" },
-  { title: "Email", value: "email" },
-  { title: "Role ID", value: "role_id" },
-  { title: "Role Name", value: "role_name" },
-  { title: "Status", value: "is_active" },
-];
 
 const clickHeaders = [
   { title: "User ID", key: "user_id", align: "start" },
@@ -342,25 +298,13 @@ const formatDate = (dateString) => {
   });
 };
 
-// API call to get current admin profile
-const fetchAdminProfile = async () => {
+// API call to get current user profile
+const fetchUserProfile = async () => {
   try {
     const res = await api.get("/me");
     userProfile.value = res.data;
   } catch (err) {
-    console.error("Failed to load admin profile info", err);
-  }
-};
-
-const fetchUsers = async () => {
-  loadingUsers.value = true;
-  try {
-    const res = await api.get("/users");
-    users.value = res.data.user;
-  } catch (err) {
-    console.error("Failed to load users", err);
-  } finally {
-    loadingUsers.value = false;
+    console.error("Failed to load user profile info", err);
   }
 };
 
@@ -378,8 +322,7 @@ const fetchClicks = async () => {
 
 onMounted(async () => {
   try {
-    await fetchAdminProfile();
-    await fetchUsers();
+    await fetchUserProfile();
     await fetchClicks();
   } catch (error) {
     console.error("Error loading dashboard data:", error);

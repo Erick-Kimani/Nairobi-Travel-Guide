@@ -13,12 +13,24 @@ api.interceptors.request.use(
   (config) => {
     const token = TokenService.getToken();
     if (token) {
-      // Fixed the spacing and removed the '+' sign
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Handle 401 errors (token expired/invalid)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid - clear local data and redirect
+      TokenService.removeToken();
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

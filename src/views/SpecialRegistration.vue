@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/services/api';
 
 const router = useRouter();
+const phase = ref(1);
 
-// Form state
 const form = ref({
   name: '',
   email: '',
@@ -13,24 +13,79 @@ const form = ref({
   password_confirmation: '',
 });
 
-// Submission errors
+const serviceForm = ref({
+  user_id: null,
+  category_id: '',
+  website_url: '',
+  service_image_1: null,
+  service_image_2: null,
+  service_image_3: null,
+  service_image_4: null,
+});
+
+const categories = ref([]);
 const errors = ref({});
 
-// Form submission
-const submitForm = async () => {
+// Fetch categories on mount using public route — no token needed
+onMounted(async () => {
+  try {
+    const response = await api.get('/public-categories');
+    console.log('Raw response:', response.data);
+    console.log('Category key:', response.data.Category);
+    categories.value = response.data.Category ?? [];
+    console.log('Categories set to:', categories.value);
+  } catch (err) {
+    console.error('Categories fetch failed:', err.response ?? err.message);
+  }
+});
+
+// Phase 1 — only registers the manager account, nothing else
+const submitPhase1 = async () => {
   errors.value = {};
   try {
-    // Send registration request to your API
-    const response = await api.post('/manager-register', form.value); // ✅ Removed role field
-    
-    alert('Manager registration successful! Your service ID is: ' + response.data.manager.service_id);
-    router.push('/login');
+    const response = await api.post('/manager-register', form.value);
+    serviceForm.value.user_id = response.data.user_id;
+    phase.value = 2;
   } catch (err) {
     if (err.response && err.response.data.errors) {
       errors.value = err.response.data.errors;
     } else {
-      console.error('Registration error:', err);
+      console.error('Phase 1 error:', err);
       alert('Registration failed. Please try again.');
+    }
+  }
+};
+
+const handleImageUpload = (event, field) => {
+  serviceForm.value[field] = event.target.files[0];
+};
+
+// Phase 2 — submits service details to the correct endpoint
+const submitPhase2 = async () => {
+  errors.value = {};
+  try {
+    const formData = new FormData();
+    formData.append('user_id', serviceForm.value.user_id);
+    formData.append('category_id', serviceForm.value.category_id);
+    formData.append('website_url', serviceForm.value.website_url);
+    formData.append('service_image_1', serviceForm.value.service_image_1);
+    formData.append('service_image_2', serviceForm.value.service_image_2);
+    formData.append('service_image_3', serviceForm.value.service_image_3);
+    formData.append('service_image_4', serviceForm.value.service_image_4);
+
+    await api.post('/manager-register/service', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    alert('Registration complete! Please check your email to verify your account then log in.');
+    router.push('/login');
+
+  } catch (err) {
+    if (err.response && err.response.data.errors) {
+      errors.value = err.response.data.errors;
+    } else {
+      console.error('Phase 2 error:', err);
+      alert('Service registration failed. Please try again.');
     }
   }
 };
@@ -41,49 +96,108 @@ const submitForm = async () => {
     <div class="overlay"></div>
 
     <div class="about-card glass-card">
-      <h1>Manager Registration</h1>
-      <p>
-        This section is strictly for managers who want their restaurants, hotels, transport agencies,
-        or other tourist-related destinations featured on the website.
-      </p>
 
-      <form @submit.prevent="submitForm" class="manager-form">
-        <!-- Name -->
-        <div class="form-group">
-          <label for="name">Full Name</label>
-          <input v-model="form.name" type="text" id="name" placeholder="Your Name" required>
-          <span class="error" v-if="errors.name">{{ errors.name[0] }}</span>
-        </div>
+      <!-- ======================== PHASE 1 ======================== -->
+      <template v-if="phase === 1">
+        <h1>Manager Registration</h1>
+        <p>
+          This section is strictly for managers who want their restaurants, hotels, transport agencies,
+          or other tourist-related destinations featured on the website.
+        </p>
 
-        <!-- Email -->
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input v-model="form.email" type="email" id="email" placeholder="Email" required>
-          <span class="error" v-if="errors.email">{{ errors.email[0] }}</span>
-        </div>
+        <form @submit.prevent="submitPhase1" class="manager-form">
 
-        <!-- Password -->
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input v-model="form.password" type="password" id="password" placeholder="Password" required>
-          <span class="error" v-if="errors.password">{{ errors.password[0] }}</span>
-        </div>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input v-model="form.name" type="text" id="name" placeholder="Your Name" required>
+            <span class="error" v-if="errors.name">{{ errors.name[0] }}</span>
+          </div>
 
-        <!-- Confirm Password -->
-        <div class="form-group">
-          <label for="password_confirmation">Confirm Password</label>
-          <input v-model="form.password_confirmation" type="password" id="password_confirmation" placeholder="Confirm Password" required>
-          <span class="error" v-if="errors.password_confirmation">{{ errors.password_confirmation[0] }}</span>
-        </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input v-model="form.email" type="email" id="email" placeholder="Email" required>
+            <span class="error" v-if="errors.email">{{ errors.email[0] }}</span>
+          </div>
 
-        <button type="submit" class="btn-primary">Register as Manager</button>
-      </form>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input v-model="form.password" type="password" id="password" placeholder="Password" required>
+            <span class="error" v-if="errors.password">{{ errors.password[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label for="password_confirmation">Confirm Password</label>
+            <input v-model="form.password_confirmation" type="password" id="password_confirmation" placeholder="Confirm Password" required>
+            <span class="error" v-if="errors.password_confirmation">{{ errors.password_confirmation[0] }}</span>
+          </div>
+
+          <button type="submit" class="btn-primary">Next — Add Service Details</button>
+        </form>
+      </template>
+
+      <!-- ======================== PHASE 2 ======================== -->
+      <template v-if="phase === 2">
+        <h1>Service Details</h1>
+        <p>
+          Almost done! Add your service images, website URL and category to complete your registration.
+        </p>
+
+        <form @submit.prevent="submitPhase2" class="manager-form">
+
+          <div class="form-group">
+            <label for="website_url">Website URL</label>
+            <input v-model="serviceForm.website_url" type="url" id="website_url" placeholder="https://yourwebsite.com" required>
+            <span class="error" v-if="errors.website_url">{{ errors.website_url[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label for="category_id">Category</label>
+            <select v-model="serviceForm.category_id" id="category_id" required>
+              <option value="" disabled>Select a category</option>
+              <option v-for="category in categories" :key="category.id" :value="category.id">
+                {{ category.name }}
+              </option>
+            </select>
+            <span class="error" v-if="errors.category_id">{{ errors.category_id[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Service Image 1</label>
+            <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_1')" required>
+            <span class="error" v-if="errors.service_image_1">{{ errors.service_image_1[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Service Image 2</label>
+            <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_2')" required>
+            <span class="error" v-if="errors.service_image_2">{{ errors.service_image_2[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Service Image 3</label>
+            <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_3')" required>
+            <span class="error" v-if="errors.service_image_3">{{ errors.service_image_3[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Service Image 4</label>
+            <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_4')" required>
+            <span class="error" v-if="errors.service_image_4">{{ errors.service_image_4[0] }}</span>
+          </div>
+
+          <div class="button-row">
+            <button type="button" class="btn-secondary" @click="phase = 1">Back</button>
+            <button type="submit" class="btn-primary">Complete Registration</button>
+          </div>
+
+        </form>
+      </template>
+
     </div>
   </section>
 </template>
 
 <style scoped>
-/* Hero Section */
 .about-hero {
   height: 100vh;
   background-image: url("public/images/Evening rays.png");
@@ -94,20 +208,20 @@ const submitForm = async () => {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overflow-y: auto;
 }
 
-/* Overlay */
 .overlay {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* Glass Card */
 .about-card {
   position: relative;
   padding: 30px;
   max-width: 500px;
+  width: 100%;
   border-radius: 40px;
   color: #aa2f2f;
   z-index: 2;
@@ -119,21 +233,18 @@ const submitForm = async () => {
   flex-direction: column;
 }
 
-/* Headings */
 .about-card h1 {
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
   margin-bottom: 16px;
 }
 
-/* Paragraph */
 .about-card p {
   font-size: 1.2rem;
   margin-bottom: 24px;
   color: #e5e7eb;
 }
 
-/* Form */
 .manager-form {
   display: flex;
   flex-direction: column;
@@ -151,11 +262,13 @@ const submitForm = async () => {
   font-weight: 500;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   padding: 10px 15px;
   border-radius: 8px;
   border: 4px solid #ccc;
   font-size: 1.0rem;
+  background: rgba(255,255,255,0.85);
 }
 
 .error {
@@ -164,7 +277,12 @@ const submitForm = async () => {
   margin-top: 4px;
 }
 
-/* Button */
+.button-row {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
 .btn-primary {
   background-color: #2c261b;
   color: #79ddcb;
@@ -179,10 +297,24 @@ const submitForm = async () => {
 .btn-primary:hover {
   transform: translateY(-2px);
   background-color: #e6c75a;
-  color:#aa2f2f;
+  color: #aa2f2f;
 }
 
-/* Responsive */
+.btn-secondary {
+  background-color: transparent;
+  color: #e5e7eb;
+  padding: 12px 28px;
+  border-radius: 1000px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e5e7eb;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255,255,255,0.15);
+}
+
 @media (max-width: 1024px) {
   .about-card {
     max-width: 90%;

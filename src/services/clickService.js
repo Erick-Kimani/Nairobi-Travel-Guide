@@ -1,21 +1,18 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:8000/api"; // adjust if needed
-axios.defaults.withCredentials = true;       // send cookies for Sanctum
+import api from '@/services/api'; // use the configured api instance, not raw axios
 
 export default {
-  // Get CSRF cookie before POST requests
+  // CSRF cookie no longer needed — Bearer token handles auth
   getCsrfCookie() {
-    return axios.get("http://localhost:8000/sanctum/csrf-cookie");
+    return Promise.resolve(); // keep method so component doesn't break
   },
 
-  // Track a click
+  // Track a click — now sends Bearer token automatically
   trackClick(serviceId) {
-    return axios.post(`${API_URL}/track-click`, { service_id: serviceId });
+    return api.post('/track-click', { service_id: serviceId });
   },
 
-  // Fetch analytics
+  // Fetch analytics — now sends Bearer token automatically
   getAnalytics() {
-    return axios.get(`${API_URL}/click-analytics`);
+    return api.get('/click-analytics');
   }
 };

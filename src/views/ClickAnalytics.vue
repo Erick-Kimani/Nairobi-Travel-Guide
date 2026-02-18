@@ -27,7 +27,6 @@
           @click="currentView = 'profile'"
           rounded="lg"
         />
-      
         <v-list-item
           prepend-icon="mdi-cursor-default-click"
           title="2. Click Monitoring"
@@ -42,7 +41,6 @@
           <v-btn
             variant="text"
             block
-            :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
             @click.stop="rail = !rail"
           >
             <v-icon v-if="rail">mdi-chevron-right</v-icon>
@@ -51,15 +49,17 @@
         </div>
       </template>
     </v-navigation-drawer>
-    
+
     <v-main class="bg-grey-lighten-4">
       <v-container fluid class="pa-6">
         <v-fade-transition hide-on-leave>
-          
-          <!-- User Profile Section -->
+
+          <!-- ===================== PROFILE ===================== -->
           <v-card v-if="currentView === 'profile'" elevation="2" border>
             <v-toolbar flat color="white">
-              <v-toolbar-title class="text-h6 font-weight-medium">My Profile Details</v-toolbar-title>
+              <v-toolbar-title class="text-h6 font-weight-medium">
+                My Profile Details
+              </v-toolbar-title>
             </v-toolbar>
             <v-divider />
             <v-table hover>
@@ -90,10 +90,20 @@
                   <td><strong>Permissions/Abilities</strong></td>
                   <td>
                     <div class="d-flex ga-1 flex-wrap">
-                      <v-chip v-for="ability in userProfile?.abilities" :key="ability" size="x-small" color="deep-orange">
+                      <v-chip
+                        v-for="ability in userProfile?.abilities"
+                        :key="ability"
+                        size="x-small"
+                        color="deep-orange"
+                      >
                         {{ ability }}
                       </v-chip>
-                      <span v-if="!userProfile?.abilities?.length" class="text-caption text-grey">Default Access</span>
+                      <span
+                        v-if="!userProfile?.abilities?.length"
+                        class="text-caption text-grey"
+                      >
+                        Default Access
+                      </span>
                     </div>
                   </td>
                 </tr>
@@ -101,21 +111,22 @@
             </v-table>
           </v-card>
 
-          <!-- Click Monitoring Section - GROUPED BY SERVICE -->
+          <!-- ===================== CLICK MONITORING ===================== -->
           <div v-else-if="currentView === 'clicks'">
+
             <!-- Summary Card -->
             <v-card elevation="2" border class="mb-4">
               <v-toolbar flat color="white">
                 <v-toolbar-title class="text-h6 font-weight-medium">
-                  Click Monitoring - Overview
+                  Click Monitoring — Overview
                 </v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn 
-                  icon="mdi-refresh" 
-                  @click="fetchClicks" 
+                <v-spacer />
+                <v-btn
+                  icon="mdi-refresh"
+                  @click="fetchClicks"
                   :loading="loadingClicks"
                   title="Refresh data"
-                ></v-btn>
+                />
               </v-toolbar>
               <v-divider />
               <v-card-text>
@@ -149,10 +160,10 @@
             </v-card>
 
             <!-- Individual Service Tables -->
-            <v-card 
-              v-for="(serviceGroup, index) in groupedClicksByService" 
+            <v-card
+              v-for="serviceGroup in groupedClicksByService"
               :key="serviceGroup.service_id"
-              elevation="2" 
+              elevation="2"
               border
               class="mb-4"
             >
@@ -162,14 +173,24 @@
                 </v-chip>
                 <v-toolbar-title class="text-h6 font-weight-medium">
                   {{ serviceGroup.service_name }}
+                  <v-btn
+                    :href="serviceGroup.service_name"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    icon="mdi-open-in-new"
+                    size="x-small"
+                    variant="text"
+                    color="primary"
+                    class="ml-1"
+                  />
                 </v-toolbar-title>
-                <v-spacer></v-spacer>
+                <v-spacer />
                 <v-chip color="success" variant="flat" size="small">
                   {{ serviceGroup.total_service_clicks }} Total Clicks
                 </v-chip>
               </v-toolbar>
               <v-divider />
-              
+
               <v-data-table
                 :items="serviceGroup.clicks"
                 :headers="clickHeaders"
@@ -178,24 +199,21 @@
                 items-per-page="10"
                 class="elevation-0"
               >
-                <!-- Format User ID -->
                 <template #item.user_id="{ item }">
                   <v-chip size="small" color="primary" variant="tonal">
                     {{ item.user_id }}
                   </v-chip>
                 </template>
 
-                <!-- Format Service ID -->
                 <template #item.service_id="{ item }">
                   <v-chip size="small" color="secondary" variant="tonal">
                     {{ item.service_id }}
                   </v-chip>
                 </template>
 
-                <!-- Format Total Clicks -->
                 <template #item.total_clicks="{ item }">
-                  <v-chip 
-                    size="small" 
+                  <v-chip
+                    size="small"
                     :color="item.total_clicks > 5 ? 'success' : 'default'"
                     variant="flat"
                   >
@@ -203,23 +221,44 @@
                   </v-chip>
                 </template>
 
-                <!-- Format Last Clicked At -->
                 <template #item.last_clicked_at="{ item }">
                   <span class="text-caption">
                     {{ formatDate(item.last_clicked_at) }}
                   </span>
                 </template>
+
+                <template #item.service_name="{ item }">
+                  <span class="service-url">{{ item.service_name }}</span>
+                  <v-btn
+                    :href="item.service_name"
+                    target="_blank"
+                    icon="mdi-open-in-new"
+                    size="x-small"
+                    variant="text"
+                    color="primary"
+                    class="ml-1"
+                  />
+                </template>
               </v-data-table>
             </v-card>
 
             <!-- Empty State -->
-            <v-card v-if="!loadingClicks && groupedClicksByService.length === 0" elevation="2" border>
+            <v-card
+              v-if="!loadingClicks && groupedClicksByService.length === 0"
+              elevation="2"
+              border
+            >
               <v-card-text class="text-center py-12">
-                <v-icon size="64" color="grey-lighten-1">mdi-cursor-default-click-outline</v-icon>
+                <v-icon size="64" color="grey-lighten-1">
+                  mdi-cursor-default-click-outline
+                </v-icon>
                 <p class="text-h6 text-grey mt-4">No click data available</p>
-                <p class="text-caption text-grey">Clicks will appear here once users interact with services</p>
+                <p class="text-caption text-grey">
+                  Clicks will appear here once users interact with services
+                </p>
               </v-card-text>
             </v-card>
+
           </div>
 
         </v-fade-transition>
@@ -232,79 +271,63 @@
 import { ref, computed, onMounted } from "vue";
 import api from "@/services/api";
 
-const drawer = ref(true);
-const rail = ref(false); 
-const currentView = ref("profile");
-const clicks = ref([]);
-const loadingClicks = ref(false);
-const userProfile = ref(null);
+const drawer         = ref(true);
+const rail           = ref(false);
+const currentView    = ref("profile");
+const clicks         = ref([]);
+const loadingClicks  = ref(false);
+const userProfile    = ref(null);
 
 const clickHeaders = [
-  { title: "User ID", key: "user_id", align: "start" },
-  { title: "User Name", key: "user_name" },
-  { title: "Service ID", key: "service_id", align: "start" },
-  { title: "Service Name", key: "service_name" },
-  { title: "Total Clicks", key: "total_clicks", align: "center" },
+  { title: "User ID",         key: "user_id",         align: "start" },
+  { title: "User Name",       key: "user_name" },
+  { title: "Service ID",      key: "service_id",      align: "start" },
+  { title: "Service URL",     key: "service_name" },
+  { title: "Total Clicks",    key: "total_clicks",    align: "center" },
   { title: "Last Clicked At", key: "last_clicked_at" },
 ];
 
-// Computed: Group clicks by service_id
 const groupedClicksByService = computed(() => {
   const grouped = {};
-  
   clicks.value.forEach(click => {
-    const serviceId = click.service_id;
-    
-    if (!grouped[serviceId]) {
-      grouped[serviceId] = {
-        service_id: serviceId,
-        service_name: click.service_name,
-        clicks: [],
-        total_service_clicks: 0
+    const sid = click.service_id;
+    if (!grouped[sid]) {
+      grouped[sid] = {
+        service_id:           sid,
+        service_name:         click.service_name,
+        clicks:               [],
+        total_service_clicks: 0,
       };
     }
-    
-    grouped[serviceId].clicks.push(click);
-    grouped[serviceId].total_service_clicks += click.total_clicks;
+    grouped[sid].clicks.push(click);
+    grouped[sid].total_service_clicks += click.total_clicks;
   });
-  
-  // Convert to array and sort by total clicks (descending)
-  return Object.values(grouped).sort((a, b) => 
-    b.total_service_clicks - a.total_service_clicks
+  return Object.values(grouped).sort(
+    (a, b) => b.total_service_clicks - a.total_service_clicks
   );
 });
 
-// Computed: Summary statistics
 const totalServices = computed(() => groupedClicksByService.value.length);
+const totalClicks   = computed(() => clicks.value.reduce((sum, c) => sum + c.total_clicks, 0));
+const totalUsers    = computed(() => new Set(clicks.value.map(c => c.user_id)).size);
 
-const totalClicks = computed(() => {
-  return clicks.value.reduce((sum, click) => sum + click.total_clicks, 0);
-});
-
-const totalUsers = computed(() => {
-  const uniqueUsers = new Set(clicks.value.map(click => click.user_id));
-  return uniqueUsers.size;
-});
-
-// Format date helper
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Africa/Nairobi'
+    year:     'numeric',
+    month:    'short',
+    day:      'numeric',
+    hour:     '2-digit',
+    minute:   '2-digit',
+    timeZone: 'Africa/Nairobi',
   });
 };
 
-// API call to get current user profile
 const fetchUserProfile = async () => {
   try {
     const res = await api.get("/me");
     userProfile.value = res.data;
   } catch (err) {
-    console.error("Failed to load user profile info", err);
+    console.error("Failed to load user profile", err);
   }
 };
 
@@ -321,17 +344,19 @@ const fetchClicks = async () => {
 };
 
 onMounted(async () => {
-  try {
-    await fetchUserProfile();
-    await fetchClicks();
-  } catch (error) {
-    console.error("Error loading dashboard data:", error);
-  }
+  await fetchUserProfile();
+  await fetchClicks();
 });
 </script>
 
 <style scoped>
 .v-main {
   min-height: 100vh;
+}
+
+.service-url {
+  font-size: 0.85rem;
+  color: #333;
+  word-break: break-all;
 }
 </style>

@@ -1,30 +1,29 @@
-<script setup> 
+<script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useVacationsStore } from '@/Store/Vacations'
 
 const router = useRouter()
-const store = useVacationsStore()
+const store  = useVacationsStore()
 
-const Vacations = ref([])
 const searchQuery = ref('')
 
 onMounted(() => {
-  Vacations.value = store.vacations
+  store.fetchVacations()
 })
 
 const filteredVacations = computed(() => {
-  if (!searchQuery.value) return Vacations.value
+  if (!searchQuery.value) return store.vacations
   const query = searchQuery.value.toLowerCase()
-  return Vacations.value.filter(
-    Vacation =>
-      Vacation.name.toLowerCase().includes(query) ||
-      Vacation.description.toLowerCase().includes(query)
+  return store.vacations.filter(
+    v =>
+      v.name.toLowerCase().includes(query) ||
+      v.description.toLowerCase().includes(query)
   )
 })
 
-function viewDetails(Vacation) {
-  store.selectVacation(Vacation)
+function viewDetails(vacation) {
+  store.selectVacation(vacation)
   router.push('/vacationdetails')
 }
 </script>
@@ -36,7 +35,7 @@ function viewDetails(Vacation) {
         <img src="/images/Picture 25 .jpg" alt="Header Image" class="hero-image" />
         <div class="hero-overlay">
           <h1 class="text-center text-3xl font-bold text-primary title-glow">
-            Our Vacation Lodges
+            Vacation Hotels
           </h1>
         </div>
       </div>
@@ -46,7 +45,7 @@ function viewDetails(Vacation) {
       <div class="search-wrapper mb-10 px-4">
         <v-text-field
           v-model="searchQuery"
-          label="Search for a Vacation..."
+          label="Search for a Vacation Hotel..."
           prepend-inner-icon="mdi-magnify"
           variant="outlined"
           clearable
@@ -54,36 +53,34 @@ function viewDetails(Vacation) {
         />
       </div>
 
-      <v-row class="px-4">
+      <div v-if="store.loading" class="text-center py-10">
+        <v-progress-circular indeterminate color="orange" size="48" />
+        <p class="text-grey-lighten-1 mt-4">Loading vacation hotels…</p>
+      </div>
+
+      <div v-else-if="store.error" class="text-center py-10">
+        <p class="text-red-lighten-1">{{ store.error }}</p>
+        <v-btn color="orange" class="mt-4" @click="store.fetchVacations()">Retry</v-btn>
+      </div>
+
+      <v-row v-else class="px-4">
         <v-col
-          v-for="(Vacation, index) in filteredVacations"
-          :key="index"
-          cols="12"
-          sm="6"
-          md="4"
+          v-for="(vacation, index) in filteredVacations"
+          :key="vacation.id ?? index"
+          cols="12" sm="6" md="4"
           class="pb-10"
         >
           <div class="card-border-wrapper">
-            <v-card class="Vacation-card" elevation="0" @click="viewDetails(Vacation)">
+            <v-card class="item-card" elevation="0" @click="viewDetails(vacation)">
               <div class="image-wrapper">
-                <v-img :src="Vacation.image" height="200" cover />
+                <v-img :src="vacation.image" height="200" cover />
               </div>
-
               <v-card-text class="pt-4">
-                <h3 class="card-title">{{ Vacation.name }}</h3>
-                <p class="price">Price: {{ Vacation.price }}</p>
-                <p class="description">{{ Vacation.description }}</p>
+                <h3 class="card-title">{{ vacation.name }}</h3>
+                <p class="description">{{ vacation.description }}</p>
               </v-card-text>
-
               <v-card-actions class="px-4 pb-4 mt-auto">
-                <!-- BUTTON: FULL WIDTH, REDUCED HEIGHT -->
-                <v-btn
-                  block
-                  size="small"
-                  color="orange"
-                  variant="elevated"
-                  class="details-btn"
-                >
+                <v-btn block size="small" color="orange" variant="elevated" class="details-btn">
                   View Details
                 </v-btn>
               </v-card-actions>
@@ -92,10 +89,13 @@ function viewDetails(Vacation) {
         </v-col>
       </v-row>
 
-      <v-row v-if="filteredVacations.length === 0">
+      <v-row v-if="!store.loading && filteredVacations.length === 0">
         <v-col cols="12" class="text-center">
           <p class="text-grey-lighten-1 mt-6">
-            No Vacations found matching "<strong>{{ searchQuery }}</strong>"
+            <template v-if="searchQuery">
+              No vacations found matching "<strong>{{ searchQuery }}</strong>"
+            </template>
+            <template v-else>No vacation hotels are available right now.</template>
           </p>
         </v-col>
       </v-row>
@@ -104,115 +104,21 @@ function viewDetails(Vacation) {
 </template>
 
 <style scoped>
-.page-container {
-  min-height: 100vh;
-  background-color: #000;
-  color: #fff;
-}
-
-/* --- HERO SECTION --- */
-.hero-header {
-  position: relative;
-  width: 100%;
-  height: 300px;
-  background-color: #000;
-}
-
-.hero-image-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  clip-path: ellipse(160% 112% at 60% 0%);
-  overflow: hidden;
-}
-
-.hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* --- CONTENT BODY --- */
-.content-body {
-  position: relative;
-  z-index: 2;
-  background-color: #000; 
-}
-
-.search-field {
-  max-width: 350px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-}
-
-/* --- CARD BORDER --- */
-.card-border-wrapper {
-  position: relative;
-  padding: 8px;
-  border-radius: 68px;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  transition: transform 0.3s ease;
-}
-
-.card-border-wrapper::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url('/images/Picture 5 .jpg'); 
-  background-size: cover;
-  background-position: center;
-  border-radius: 68px;
-  z-index: 0;
-}
-
-.Vacation-card {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  border-radius: 60px !important;
-  background: rgba(30, 30, 30, 0.95) !important;
-  backdrop-filter: blur(20px);
-  cursor: pointer;
-}
-
-.card-border-wrapper:hover {
-  transform: translateY(-10px);
-}
-
-.image-wrapper {
-  overflow: hidden;
-  border-top-left-radius: 60px;
-  border-top-right-radius: 60px;
-}
-
-/* --- BUTTON HEIGHT CONTROL --- */
-.details-btn {
-  min-height: 36px !important;      /* reduces height */
-  padding: 6px 0 !important;        /* keeps width full */
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  border-radius: 69px;
-}
-
-/* --- TEXT --- */
-.title-glow {
-  text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-}
-.card-title { font-size: 1.4rem; font-weight: 700; color: #fff; }
-.price { font-weight: bold; color: #ff9800; font-size: 1.1rem; }
+.page-container { min-height: 100vh; background-color: #000; color: #fff; }
+.hero-header { position: relative; width: 100%; height: 300px; background-color: #000; }
+.hero-image-container { position: relative; width: 100%; height: 100%; clip-path: ellipse(160% 112% at 60% 0%); overflow: hidden; }
+.hero-image { width: 100%; height: 100%; object-fit: cover; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)); display: flex; align-items: center; justify-content: center; }
+.content-body { position: relative; z-index: 2; background-color: #000; }
+.search-field { max-width: 350px; background: rgba(255,255,255,0.05); border-radius: 8px; }
+.card-border-wrapper { position: relative; padding: 8px; border-radius: 68px; overflow: hidden; height: 100%; display: flex; transition: transform 0.3s ease; }
+.card-border-wrapper::before { content: ""; position: absolute; inset: 0; background-image: url('/images/Picture 5 .jpg'); background-size: cover; background-position: center; border-radius: 68px; z-index: 0; }
+.card-border-wrapper:hover { transform: translateY(-10px); }
+.item-card { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; border-radius: 60px !important; background: rgba(30,30,30,0.95) !important; backdrop-filter: blur(20px); cursor: pointer; }
+.image-wrapper { overflow: hidden; border-top-left-radius: 60px; border-top-right-radius: 60px; }
+.details-btn { min-height: 36px !important; padding: 6px 0 !important; font-weight: 600; letter-spacing: 0.5px; border-radius: 69px; }
+.title-glow { text-shadow: 0 0 15px rgba(255,215,0,0.4); }
+.card-title { font-size: 1.4rem; font-weight: 700; color: #ff9800; }
 .description { font-size: 0.95rem; color: #e0e0e0; }
 .text-primary { color: #ffd700 !important; font-size: 3.5rem !important; }
 </style>

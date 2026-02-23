@@ -14,32 +14,26 @@ const form = ref({
 });
 
 const serviceForm = ref({
-  user_id: null,
-  category_id: '',
-  website_url: '',
+  user_id:         null,
+  name:            '',
+  description:     '',
+  category:        '',
+  website_url:     '',
   service_image_1: null,
-  service_image_2: null,
-  service_image_3: null,
-  service_image_4: null,
 });
 
 const categories = ref([]);
 const errors = ref({});
 
-// Fetch categories on mount using public route — no token needed
 onMounted(async () => {
   try {
     const response = await api.get('/public-categories');
-    console.log('Raw response:', response.data);
-    console.log('Category key:', response.data.Category);
     categories.value = response.data.Category ?? [];
-    console.log('Categories set to:', categories.value);
   } catch (err) {
     console.error('Categories fetch failed:', err.response ?? err.message);
   }
 });
 
-// Phase 1 — only registers the manager account, nothing else
 const submitPhase1 = async () => {
   errors.value = {};
   try {
@@ -60,18 +54,16 @@ const handleImageUpload = (event, field) => {
   serviceForm.value[field] = event.target.files[0];
 };
 
-// Phase 2 — submits service details to the correct endpoint
 const submitPhase2 = async () => {
   errors.value = {};
   try {
     const formData = new FormData();
-    formData.append('user_id', serviceForm.value.user_id);
-    formData.append('category_id', serviceForm.value.category_id);
-    formData.append('website_url', serviceForm.value.website_url);
+    formData.append('user_id',         serviceForm.value.user_id);
+    formData.append('name',            serviceForm.value.name);
+    formData.append('description',     serviceForm.value.description);
+    formData.append('category',        serviceForm.value.category);
+    formData.append('website_url',     serviceForm.value.website_url);
     formData.append('service_image_1', serviceForm.value.service_image_1);
-    formData.append('service_image_2', serviceForm.value.service_image_2);
-    formData.append('service_image_3', serviceForm.value.service_image_3);
-    formData.append('service_image_4', serviceForm.value.service_image_4);
 
     await api.post('/manager-register/service', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -106,7 +98,6 @@ const submitPhase2 = async () => {
         </p>
 
         <form @submit.prevent="submitPhase1" class="manager-form">
-
           <div class="form-group">
             <label for="name">Full Name</label>
             <input v-model="form.name" type="text" id="name" placeholder="Your Name" required>
@@ -138,11 +129,22 @@ const submitPhase2 = async () => {
       <!-- ======================== PHASE 2 ======================== -->
       <template v-if="phase === 2">
         <h1>Service Details</h1>
-        <p>
-          Almost done! Add your service images, website URL and category to complete your registration.
-        </p>
+        <p>Almost done! Fill in your service details to complete your registration.</p>
 
         <form @submit.prevent="submitPhase2" class="manager-form">
+
+          <div class="form-group">
+            <label for="service_name">Service / Property Name</label>
+            <input v-model="serviceForm.name" type="text" id="service_name" placeholder="e.g. Emakoko Lodge" required>
+            <span class="error" v-if="errors.name">{{ errors.name[0] }}</span>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea v-model="serviceForm.description" id="description" placeholder="Describe your property or service…" rows="3" required></textarea>
+            <span class="error" v-if="errors.description">{{ errors.description[0] }}</span>
+          </div>
+
 
           <div class="form-group">
             <label for="website_url">Website URL</label>
@@ -151,38 +153,20 @@ const submitPhase2 = async () => {
           </div>
 
           <div class="form-group">
-            <label for="category_id">Category</label>
-            <select v-model="serviceForm.category_id" id="category_id" required>
+            <label for="category">Category</label>
+            <select v-model="serviceForm.category" id="category" required>
               <option value="" disabled>Select a category</option>
-              <option v-for="category in categories" :key="category.id" :value="category.id">
-                {{ category.name }}
+              <option v-for="cat in categories" :key="cat.id" :value="cat.name">
+                {{ cat.name }}
               </option>
             </select>
-            <span class="error" v-if="errors.category_id">{{ errors.category_id[0] }}</span>
+            <span class="error" v-if="errors.category">{{ errors.category[0] }}</span>
           </div>
 
           <div class="form-group">
-            <label>Service Image 1</label>
+            <label>Service Image</label>
             <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_1')" required>
             <span class="error" v-if="errors.service_image_1">{{ errors.service_image_1[0] }}</span>
-          </div>
-
-          <div class="form-group">
-            <label>Service Image 2</label>
-            <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_2')" required>
-            <span class="error" v-if="errors.service_image_2">{{ errors.service_image_2[0] }}</span>
-          </div>
-
-          <div class="form-group">
-            <label>Service Image 3</label>
-            <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_3')" required>
-            <span class="error" v-if="errors.service_image_3">{{ errors.service_image_3[0] }}</span>
-          </div>
-
-          <div class="form-group">
-            <label>Service Image 4</label>
-            <input type="file" accept="image/*" @change="handleImageUpload($event, 'service_image_4')" required>
-            <span class="error" v-if="errors.service_image_4">{{ errors.service_image_4[0] }}</span>
           </div>
 
           <div class="button-row">
@@ -199,7 +183,7 @@ const submitPhase2 = async () => {
 
 <style scoped>
 .about-hero {
-  height: 100vh;
+  min-height: 100vh;
   background-image: url("public/images/Evening rays.png");
   background-size: cover;
   background-position: center;
@@ -240,7 +224,7 @@ const submitPhase2 = async () => {
 }
 
 .about-card p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 24px;
   color: #e5e7eb;
 }
@@ -263,12 +247,15 @@ const submitPhase2 = async () => {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   padding: 10px 15px;
   border-radius: 8px;
   border: 4px solid #ccc;
-  font-size: 1.0rem;
+  font-size: 1rem;
   background: rgba(255,255,255,0.85);
+  font-family: inherit;
+  resize: vertical;
 }
 
 .error {
@@ -316,19 +303,11 @@ const submitPhase2 = async () => {
 }
 
 @media (max-width: 1024px) {
-  .about-card {
-    max-width: 90%;
-    padding: 30px;
-  }
+  .about-card { max-width: 90%; padding: 30px; }
 }
 
 @media (max-width: 600px) {
-  .about-card h1 {
-    font-size: 1.6rem;
-  }
-
-  .about-card p {
-    font-size: 1rem;
-  }
+  .about-card h1 { font-size: 1.6rem; }
+  .about-card p  { font-size: 1rem; }
 }
 </style>

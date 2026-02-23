@@ -1,59 +1,92 @@
+/* =====================================================
+   LOGIN PAGE BACKGROUND
+===================================================== */
+
+.login-background {
+  min-height: 100vh;
+  background-image: url('/images/Hotair balloon.jpg'); /* from public/images */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =====================================================
+   GLASS CARD DESIGN
+===================================================== */
+
+.glass-card {
+  width: 100%;
+  max-width: 450px;
+  padding: 2rem;
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: #212121;
+}
+
+/* =====================================================
+   FORM ENHANCEMENTS (Vuetify Friendly)
+===================================================== */
+
+/* Improve spacing between fields */
+.glass-card .v-text-field {
+  margin-bottom: 16px;
+}
+
+/* Button polish */
+.glass-card .v-btn {
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card .v-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Signup text section */
+.glass-card .text-center {
+  font-size: 0.95rem;
+}
+
+/* =====================================================
+   OPTIONAL GENERIC LOGIN CONTAINER
+   (Only if reused elsewhere)
+===================================================== */
+
 .login-container {
   display: flex;
   justify-content: center;
-  /* align-items: center; */
-  /* min-height: 100vh; */
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
+/* =====================================================
+   SUMMERNOTE (If used anywhere in app)
+===================================================== */
 
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input {
-  width: 90%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-
-/**SUMMERNOTE**/
 .panel-heading {
   background-color: #d5dee7;
 }
 
 .note-editor {
-  border-radius: 3px;
+  border-radius: 6px;
 }
 
 .note-resizebar {
   display: none;
 }
-
-/**SUMMERNOTE**/

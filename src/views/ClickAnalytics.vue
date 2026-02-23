@@ -242,6 +242,7 @@
               </v-data-table>
             </v-card>
 
+            
             <!-- Empty State -->
             <v-card
               v-if="!loadingClicks && groupedClicksByService.length === 0"
@@ -279,11 +280,11 @@ const loadingClicks  = ref(false);
 const userProfile    = ref(null);
 
 const clickHeaders = [
-  { title: "User ID",         key: "user_id",         align: "start" },
+  //{ title: "User ID",         key: "user_id",         align: "start" },
   { title: "User Name",       key: "user_name" },
   { title: "Service ID",      key: "service_id",      align: "start" },
   { title: "Service URL",     key: "service_name" },
-  { title: "Total Clicks",    key: "total_clicks",    align: "center" },
+  { title: "Total Visits",    key: "total_clicks",    align: "center" },
   { title: "Last Clicked At", key: "last_clicked_at" },
 ];
 

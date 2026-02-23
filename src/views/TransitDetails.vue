@@ -85,15 +85,6 @@ async function handleVisit() {
 
             <v-divider class="mb-8" />
 
-            <!-- PRICE -->
-            <div class="mb-10">
-              <div class="text-subtitle-1 text-grey-lighten-1 mb-1">
-                Nightly Rate
-              </div>
-              <div class="text-h4 font-weight-bold text-blue-darken-3">
-                Ksh {{ numericPrice }}
-              </div>
-            </div>
 
             <v-divider class="mb-8" />
 

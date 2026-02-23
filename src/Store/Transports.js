@@ -1,46 +1,45 @@
 import { defineStore } from 'pinia'
+import api from '@/services/api'
 
-export const useTransportsStore = defineStore('Transports', {
+export const useTransportsStore = defineStore('transports', {
   state: () => ({
-    Transports: [
-      {
-        id: 1,
-        name: 'Giraffe Manor',
-        description:
-          'A boutique hotel in Nairobi where giraffes roam freely. Luxurious rooms and unforgettable wildlife experiences.',
-        price: 'Ksh 65,000 / night',
-        image: 'public/images/Picture 22 .jpg',
-        code: 'GM001',
-        website: 'https://www.thesafaricollection.com/properties/giraffe-manor/accommodation-manor-house/'
-      },
-      {
-        id: 2,
-        name: 'Maasai Mara Safari Camp',
-        description:
-          'Experience the ultimate safari in Maasai Mara with luxury tents, private guides, and breathtaking views.',
-        price: 'Ksh 40,000 / night',
-        image: 'public/images/Picture 8 .jpg',
-        code: 'MM001',
-        website: 'https://www.booking.com/hotel/ke/maasai-mara-safari-camp-narok.html'
-      },
-      {
-        id: 3,
-        name: 'Hemingways Nairobi',
-        description:
-          'Five-star hotel in Nairobi offering world-class amenities, elegant suites, and panoramic views of the city.',
-        price: 'Ksh 55,000 / night',
-        image: '/public/images/Picture 31 .jpg',
-        code: 'HN001',
-        website: 'https://www.hemingways-collection.com/nairobi/'
-      },
-
-    ],
-    selectedTransport: null
+    transports: [],
+    selectedTransport: null,
+    loading: false,
+    error: null,
   }),
 
   actions: {
-    selectTransport(Transport) {
-      this.selectedTransport = Transport
-    }
-  }
+    async fetchTransports() {
+      this.loading = true
+      this.error   = null
+      try {
+        const res = await api.get('/services', {
+          params: { category_id: 5, is_published: 1 },
+        })
+        const raw = res.data.services ?? res.data ?? []
+
+        this.transports = raw.map(s => ({
+          id:          s.id,
+          name:        s.name        ?? '—',
+          description: s.description ?? '',
+          price:       s.price       ? `Ksh ${Number(s.price).toLocaleString()} / night` : 'Contact for pricing',
+          image:       s.service_image_1
+                         ? `http://127.0.0.1:8000/storage/${s.service_image_1}`
+                         : '/images/Picture 30 .jpg',
+          code:        s.transport_code ?? s.code ?? '',
+          website:     s.website_url    ?? '',
+        }))
+      } catch (err) {
+        console.error('Failed to fetch transports:', err)
+        this.error = 'Failed to load transport services.'
+      } finally {
+        this.loading = false
+      }
+    },
+
+    selectTransport(transport) {
+      this.selectedTransport = transport
+    },
+  },
 })

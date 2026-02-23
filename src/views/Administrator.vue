@@ -11,7 +11,7 @@
         {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'AD' }}
       </v-avatar>
     </v-app-bar>
-    
+
     <v-navigation-drawer
       v-model="drawer"
       :rail="rail"
@@ -100,6 +100,15 @@
           @click="currentView = 'clicks'"
           rounded="lg"
         />
+
+        <!-- Manager Approval -->
+        <v-list-item
+          prepend-icon="mdi-clipboard-check"
+          title="Manager Approval"
+          :active="currentView === 'approvals'"
+          @click="loadManagerApprovals(); currentView = 'approvals'"
+          rounded="lg"
+        />
       </v-list>
 
       <template v-slot:append>
@@ -120,7 +129,7 @@
     <v-main class="bg-grey-lighten-4">
       <v-container fluid class="pa-6">
         <v-fade-transition hide-on-leave>
-          
+
           <!-- Admin Profile Section -->
           <v-card v-if="currentView === 'profile'" elevation="2" border>
             <v-toolbar flat color="white">
@@ -380,11 +389,136 @@
             </v-data-table>
           </v-card>
 
+          <!-- ═══════════════════════════════════════════════
+               Manager Approvals — FULLY FIXED
+               ═══════════════════════════════════════════════ -->
+          <v-card v-else-if="currentView === 'approvals'" elevation="2" border>
+            <v-toolbar flat color="white">
+              <v-toolbar-title class="text-h6 font-weight-medium">
+                Manager Service Approvals
+              </v-toolbar-title>
+              <v-spacer />
+              <v-btn icon="mdi-refresh" @click="loadManagerApprovals" :loading="loadingApprovals" />
+            </v-toolbar>
+
+            <v-divider />
+
+            <v-data-table
+              :headers="approvalHeaders"
+              :items="pendingManagers"
+              :loading="loadingApprovals"
+              hover
+            >
+              <!-- IMAGE -->
+              <template #item.service_image_1="{ item }">
+                <v-avatar size="80" rounded="lg" class="my-2 border">
+                  <v-img
+                    v-if="item.service?.service_image_1"
+                    :src="getImageUrl(item.service.service_image_1)"
+                    cover
+                  />
+                  <v-icon v-else color="grey-lighten-2">mdi-image-outline</v-icon>
+                </v-avatar>
+              </template>
+
+              <!-- WEBSITE -->
+              <template #item.website_url="{ item }">
+                <a
+                  v-if="item.service?.website_url"
+                  :href="item.service.website_url"
+                  target="_blank"
+                  class="text-blue font-weight-medium"
+                >
+                  Visit Website
+                </a>
+                <span v-else class="text-grey text-caption">—</span>
+              </template>
+
+              <!-- CATEGORY — uses getCategoryName() with ID-map fallback -->
+              <template #item.category="{ item }">
+                <v-chip
+                  v-if="getCategoryName(item.service)"
+                  color="primary"
+                  size="small"
+                >
+                  {{ getCategoryName(item.service) }}
+                </v-chip>
+                <span v-else class="text-grey text-caption">—</span>
+              </template>
+
+              <!-- STATUS -->
+              <template #item.status="{ item }">
+                <v-chip
+                  :color="
+                    item.service?.status === 'approved' ? 'green' :
+                    item.service?.status === 'rejected' ? 'red' : 'orange'
+                  "
+                  size="small"
+                >
+                  {{
+                    item.service?.status === 'approved' ? 'Approved' :
+                    item.service?.status === 'rejected' ? 'Rejected' : 'Pending'
+                  }}
+                </v-chip>
+              </template>
+
+              <!-- ACTIONS — Approve + Reject buttons -->
+              <template #item.actions="{ item }">
+                <div class="d-flex ga-2 align-center">
+                  <!-- Approve -->
+                  <v-btn
+                    v-if="item.service?.status === 'pending'"
+                    color="green"
+                    variant="elevated"
+                    size="small"
+                    rounded="pill"
+                    prepend-icon="mdi-check"
+                    @click="approveManager(item)"
+                  >
+                    Approve
+                  </v-btn>
+
+                  <!-- Reject -->
+                  <v-btn
+                    v-if="item.service?.status === 'pending'"
+                    color="red"
+                    variant="elevated"
+                    size="small"
+                    rounded="pill"
+                    prepend-icon="mdi-close"
+                    @click="rejectManager(item)"
+                  >
+                    Reject
+                  </v-btn>
+
+                  <!-- Already approved -->
+                  <span
+                    v-if="item.service?.status === 'approved'"
+                    class="text-green text-caption font-weight-bold"
+                  >
+                    ✓ Approved
+                  </span>
+
+                  <!-- Already rejected -->
+                  <span
+                    v-if="item.service?.status === 'rejected'"
+                    class="text-red text-caption font-weight-bold"
+                  >
+                    ✗ Rejected
+                  </span>
+                </div>
+              </template>
+            </v-data-table>
+          </v-card>
+
         </v-fade-transition>
       </v-container>
     </v-main>
 
-    <!-- All your existing dialogs remain the same -->
+    <!-- ═══════════════════════════════════════════════
+         DIALOGS
+         ═══════════════════════════════════════════════ -->
+
     <!-- Vacation Dialog -->
     <v-dialog v-model="VacationStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
@@ -496,9 +630,9 @@
               <v-list-item-subtitle>{{ formatDate(selectedContact?.created_at) }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
-          
+
           <v-divider class="my-4" />
-          
+
           <div class="mb-4">
             <h4 class="mb-2">Message:</h4>
             <p class="text-body-1">{{ selectedContact?.message }}</p>
@@ -517,9 +651,9 @@
         <v-card-actions class="pa-6">
           <v-spacer />
           <v-btn variant="text" @click="viewDialog = false">Close</v-btn>
-          <v-btn 
-            color="green" 
-            variant="elevated" 
+          <v-btn
+            color="green"
+            variant="elevated"
             prepend-icon="mdi-reply"
             @click="openReplyDialog(selectedContact)"
           >
@@ -555,9 +689,9 @@
         <v-card-actions class="pa-6">
           <v-spacer />
           <v-btn variant="text" @click="closeReplyDialog">Cancel</v-btn>
-          <v-btn 
-            color="primary" 
-            variant="elevated" 
+          <v-btn
+            color="primary"
+            variant="elevated"
             width="150"
             :loading="sendingReply"
             @click="sendReply"
@@ -579,61 +713,143 @@ import { useMeetingStore } from "@/stores/meeting";
 import { useServiceStore } from "@/stores/service";
 
 const VacationStore = useVacationStore();
-const TransitStore = useTransitStore();
-const MeetingStore = useMeetingStore();
-const ServiceStore = useServiceStore();
+const TransitStore  = useTransitStore();
+const MeetingStore  = useMeetingStore();
+const ServiceStore  = useServiceStore();
 
-const drawer = ref(true);
-const rail = ref(false); 
+// ── Layout state ────────────────────────────────────────────────
+const drawer      = ref(true);
+const rail        = ref(false);
 const currentView = ref("profile");
-const users = ref([]);
-const loadingUsers = ref(false);
-const userProfile = ref(null);
-const contacts = ref([]);
+
+// ── Data refs ────────────────────────────────────────────────────
+const users           = ref([]);
+const loadingUsers    = ref(false);
+const userProfile     = ref(null);
+const contacts        = ref([]);
 const loadingContacts = ref(false);
-const clicks = ref([]);
-const loadingClicks = ref(false);
+const clicks          = ref([]);
+const loadingClicks   = ref(false);
 
-// Reply functionality states
-const viewDialog = ref(false);
-const replyDialog = ref(false);
+// ── Manager Approvals ────────────────────────────────────────────
+const pendingManagers  = ref([]);
+const loadingApprovals = ref(false);
+
+// ── Contact reply state ──────────────────────────────────────────
+const viewDialog      = ref(false);
+const replyDialog     = ref(false);
 const selectedContact = ref(null);
-const replyText = ref('');
-const sendingReply = ref(false);
+const replyText       = ref('');
+const sendingReply    = ref(false);
 
-const isAdmin = computed(() => {
-  return userProfile.value?.role_id === 1 || userProfile.value?.role_name === 'admin';
-});
+// ── Computed ─────────────────────────────────────────────────────
+const isAdmin = computed(() =>
+  userProfile.value?.role_id === 1 || userProfile.value?.role_name === 'admin'
+);
 
+// ── Table headers ────────────────────────────────────────────────
 const userHeaders = [
-  { title: "ID", value: "id" },
-  { title: "Name", value: "name" },
-  { title: "Email", value: "email" },
-  { title: "Role ID", value: "role_id" },
+  { title: "ID",        value: "id" },
+  { title: "Name",      value: "name" },
+  { title: "Email",     value: "email" },
+  { title: "Role ID",   value: "role_id" },
   { title: "Role Name", value: "role_name" },
-  { title: "Status", value: "is_active" },
+  { title: "Status",    value: "is_active" },
 ];
 
 const contactHeaders = [
-  { title: 'ID', value: 'id' },
-  { title: 'Name', value: 'name' },
-  { title: 'Email', value: 'email' },
-  { title: 'Message', value: 'message' },
-  { title: 'Reply', value: 'reply' },
-  { title: 'Status', value: 'status', sortable: false },
+  { title: 'ID',       value: 'id' },
+  { title: 'Name',     value: 'name' },
+  { title: 'Email',    value: 'email' },
+  { title: 'Message',  value: 'message' },
+  { title: 'Reply',    value: 'reply' },
+  { title: 'Status',   value: 'status',     sortable: false },
   { title: 'Received', value: 'created_at' },
-  { title: 'Actions', value: 'actions', sortable: false },
+  { title: 'Actions',  value: 'actions',    sortable: false },
 ];
 
 const clickHeaders = [
-  { title: "User ID", key: "user_id", align: "start" },
-  { title: "User Name", key: "user_name" },
-  { title: "Service ID", key: "service_id", align: "start" },
-  { title: "Service Name", key: "service_name" },
-  { title: "Total Clicks", key: "total_clicks", align: "center" },
-  { title: "Last Clicked At", key: "last_clicked_at" },
+  { title: "User ID",        key: "user_id",        align: "start" },
+  { title: "User Name",      key: "user_name" },
+  { title: "Service ID",     key: "service_id",     align: "start" },
+  { title: "Service URL",    key: "service_name" },
+  { title: "Total Clicks",   key: "total_clicks",   align: "center" },
+  { title: "Last Clicked At",key: "last_clicked_at" },
 ];
 
+// FIX: 'category' (not 'category_id') so the #item.category slot is triggered
+const approvalHeaders = [
+  { title: 'ID',           value: 'id' },
+  { title: 'Manager Name', value: 'name' },
+  { title: 'Email',        value: 'email' },
+  { title: 'Image',        value: 'service_image_1', sortable: false },
+  { title: 'Website',      value: 'website_url',     sortable: false },
+  { title: 'Category',     value: 'category',        sortable: false },
+  { title: 'Status',       value: 'status',          sortable: false },
+  { title: 'Actions',      value: 'actions',         sortable: false },
+];
+
+// ── Helpers ──────────────────────────────────────────────────────
+const getImageUrl = (path) => {
+  if (!path) return '';
+  return `http://127.0.0.1:8000/storage/${path}`;
+};
+
+// Maps category_id → human-readable name (mirrors CategorySeeder exactly)
+const categoryMap = {
+  1: 'Vacation Hotels',
+  2: 'Transit Hotels',
+  3: 'Meeting Rooms',
+  4: 'Service Apartments',
+  5: 'Transportation Services/Guided Tours',
+};
+
+// Tries the eager-loaded relationship first, falls back to the ID map
+const getCategoryName = (service) => {
+  if (service?.category?.name) return service.category.name;
+  if (service?.category_id)    return categoryMap[service.category_id] ?? `Category ${service.category_id}`;
+  return null;
+};
+
+// ── Manager approval functions ───────────────────────────────────
+const loadManagerApprovals = async () => {
+  loadingApprovals.value = true;
+  try {
+    const res = await api.get('/managers');
+    pendingManagers.value = res.data.managers ?? res.data ?? [];
+  } catch (err) {
+    console.error('Failed to load manager approvals', err);
+    pendingManagers.value = [];
+  } finally {
+    loadingApprovals.value = false;
+  }
+};
+
+const approveManager = async (manager) => {
+  if (!confirm(`Approve ${manager.name}? This will publish their service.`)) return;
+  try {
+    await api.put(`/managers/${manager.id}`, { status: 'approved' });
+    const target = pendingManagers.value.find(m => m.id === manager.id);
+    if (target?.service) target.service.status = 'approved';
+  } catch (err) {
+    console.error('Failed to approve manager', err);
+    alert('Approval failed. Please try again.');
+  }
+};
+
+const rejectManager = async (manager) => {
+  if (!confirm(`Reject ${manager.name}? Their service will not be published.`)) return;
+  try {
+    await api.put(`/managers/${manager.id}`, { status: 'rejected' });
+    const target = pendingManagers.value.find(m => m.id === manager.id);
+    if (target?.service) target.service.status = 'rejected';
+  } catch (err) {
+    console.error('Failed to reject manager', err);
+    alert('Rejection failed. Please try again.');
+  }
+};
+
+// ── Admin profile ────────────────────────────────────────────────
 const fetchAdminProfile = async () => {
   try {
     const res = await api.get("/me");
@@ -643,6 +859,7 @@ const fetchAdminProfile = async () => {
   }
 };
 
+// ── Users ────────────────────────────────────────────────────────
 const fetchUsers = async () => {
   loadingUsers.value = true;
   try {
@@ -655,18 +872,14 @@ const fetchUsers = async () => {
   }
 };
 
+// ── Contacts ─────────────────────────────────────────────────────
 const loadContacts = async () => {
   currentView.value = 'contacts';
   loadingContacts.value = true;
   try {
-    let endpoint = '/contactuses';
-    
-    if (!isAdmin.value) {
-      endpoint = '/my-contacts';
-    }
-    
+    const endpoint = isAdmin.value ? '/contactuses' : '/my-contacts';
     const res = await api.get(endpoint);
-    contacts.value = res.data.Contactus || []; 
+    contacts.value = res.data.Contactus || [];
   } catch (err) {
     console.error('Failed to load contacts', err);
     contacts.value = [];
@@ -677,7 +890,6 @@ const loadContacts = async () => {
 
 const deleteContact = async (id) => {
   if (!confirm('Are you sure you want to delete this message?')) return;
-  
   try {
     await api.delete(`/contactuses/${id}`);
     contacts.value = contacts.value.filter(c => c.id !== id);
@@ -697,7 +909,6 @@ const openReplyDialog = (contact) => {
     alert('Only administrators can send replies');
     return;
   }
-  
   selectedContact.value = contact;
   replyText.value = contact.reply || '';
   viewDialog.value = false;
@@ -715,18 +926,13 @@ const sendReply = async () => {
     alert('Please enter a reply');
     return;
   }
-
   sendingReply.value = true;
   try {
     const response = await api.post(`/contactuses/${selectedContact.value.id}/reply`, {
-      reply: replyText.value
+      reply: replyText.value,
     });
-
     const index = contacts.value.findIndex(c => c.id === selectedContact.value.id);
-    if (index !== -1) {
-      contacts.value[index] = response.data.Contactus;
-    }
-
+    if (index !== -1) contacts.value[index] = response.data.Contactus;
     alert('Reply sent successfully!');
     closeReplyDialog();
   } catch (err) {
@@ -737,17 +943,7 @@ const sendReply = async () => {
   }
 };
 
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
-
+// ── Clicks ───────────────────────────────────────────────────────
 const fetchClicks = async () => {
   loadingClicks.value = true;
   try {
@@ -760,17 +956,25 @@ const fetchClicks = async () => {
   }
 };
 
+// ── Utilities ────────────────────────────────────────────────────
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+};
+
+// ── Lifecycle ────────────────────────────────────────────────────
 onMounted(async () => {
   try {
     await fetchAdminProfile();
-    
     if (isAdmin.value) {
       await fetchUsers();
       await fetchClicks();
+      await loadManagerApprovals();
     }
-    
     await loadContacts();
-    
     await Promise.all([
       VacationStore.getVacations(),
       TransitStore.getTransits(),

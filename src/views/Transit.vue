@@ -4,19 +4,19 @@ import { useRouter } from 'vue-router'
 import { useTransitsStore } from '@/Store/Transits'
 
 const router = useRouter()
-const store = useTransitsStore()
+const store  = useTransitsStore()
 
-const transits = ref([])
 const searchQuery = ref('')
 
+// Fetch live data on mount
 onMounted(() => {
-  transits.value = store.transits
+  store.fetchTransits()
 })
 
 const filteredTransits = computed(() => {
-  if (!searchQuery.value) return transits.value
+  if (!searchQuery.value) return store.transits
   const query = searchQuery.value.toLowerCase()
-  return transits.value.filter(
+  return store.transits.filter(
     transit =>
       transit.name.toLowerCase().includes(query) ||
       transit.description.toLowerCase().includes(query)
@@ -54,10 +54,23 @@ function viewDetails(transit) {
         />
       </div>
 
-      <v-row class="px-4">
+      <!-- Loading state -->
+      <div v-if="store.loading" class="text-center py-10">
+        <v-progress-circular indeterminate color="orange" size="48" />
+        <p class="text-grey-lighten-1 mt-4">Loading transit hotels…</p>
+      </div>
+
+      <!-- Error state -->
+      <div v-else-if="store.error" class="text-center py-10">
+        <p class="text-red-lighten-1">{{ store.error }}</p>
+        <v-btn color="orange" class="mt-4" @click="store.fetchTransits()">Retry</v-btn>
+      </div>
+
+      <!-- Cards -->
+      <v-row v-else class="px-4">
         <v-col
           v-for="(transit, index) in filteredTransits"
-          :key="index"
+          :key="transit.id ?? index"
           cols="12"
           sm="6"
           md="4"
@@ -70,13 +83,12 @@ function viewDetails(transit) {
               </div>
 
               <v-card-text class="pt-4">
-                <h3 class="card-title">{{ transit.name }}</h3>
-                <p class="price">Price: {{ transit.price }}</p>
+                <h3 class="card-title">{{ transit.name }}:</h3>
+              <br>
                 <p class="description">{{ transit.description }}</p>
               </v-card-text>
 
               <v-card-actions class="px-4 pb-4 mt-auto">
-                <!-- BUTTON: FULL WIDTH, REDUCED HEIGHT -->
                 <v-btn
                   block
                   size="small"
@@ -92,10 +104,16 @@ function viewDetails(transit) {
         </v-col>
       </v-row>
 
-      <v-row v-if="filteredTransits.length === 0">
+      <!-- Empty / no results -->
+      <v-row v-if="!store.loading && filteredTransits.length === 0">
         <v-col cols="12" class="text-center">
           <p class="text-grey-lighten-1 mt-6">
-            No transits found matching "<strong>{{ searchQuery }}</strong>"
+            <template v-if="searchQuery">
+              No transits found matching "<strong>{{ searchQuery }}</strong>"
+            </template>
+            <template v-else>
+              No transit hotels are available right now.
+            </template>
           </p>
         </v-col>
       </v-row>
@@ -145,7 +163,7 @@ function viewDetails(transit) {
 .content-body {
   position: relative;
   z-index: 2;
-  background-color: #000; 
+  background-color: #000;
 }
 
 .search-field {
@@ -169,7 +187,7 @@ function viewDetails(transit) {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('/images/Picture 5 .jpg'); 
+  background-image: url('/images/Picture 5 .jpg');
   background-size: cover;
   background-position: center;
   border-radius: 68px;
@@ -198,10 +216,9 @@ function viewDetails(transit) {
   border-top-right-radius: 60px;
 }
 
-/* --- BUTTON HEIGHT CONTROL --- */
 .details-btn {
-  min-height: 36px !important;      /* reduces height */
-  padding: 6px 0 !important;        /* keeps width full */
+  min-height: 36px !important;
+  padding: 6px 0 !important;
   font-weight: 600;
   letter-spacing: 0.5px;
   border-radius: 69px;
@@ -211,8 +228,7 @@ function viewDetails(transit) {
 .title-glow {
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
 }
-.card-title { font-size: 1.4rem; font-weight: 700; color: #fff; }
-.price { font-weight: bold; color: #ff9800; font-size: 1.1rem; }
-.description { font-size: 0.95rem; color: #e0e0e0; }
-.text-primary { color: #ffd700 !important; font-size: 3.5rem !important; }
+.card-title    { font-size: 1.4rem; font-weight: 700; color: #ff9800; }
+.description   { font-size: 0.95rem; color: #e0e0e0; }
+.text-primary  { color: #ffd700 !important; font-size: 3.5rem !important; }
 </style>

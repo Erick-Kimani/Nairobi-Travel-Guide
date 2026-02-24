@@ -109,6 +109,15 @@
           @click="loadManagerApprovals(); currentView = 'approvals'"
           rounded="lg"
         />
+
+        <!-- ── NEW: Publish Service ── -->
+        <v-list-item
+          prepend-icon="mdi-plus-circle-outline"
+          title="Published Service"
+          :active="currentView === 'publishService'"
+          @click="openPublishView"
+          rounded="lg"
+        />
       </v-list>
 
       <template v-slot:append>
@@ -390,7 +399,7 @@
           </v-card>
 
           <!-- ═══════════════════════════════════════════════
-               Manager Approvals — FULLY FIXED
+               Manager Approvals
                ═══════════════════════════════════════════════ -->
           <v-card v-else-if="currentView === 'approvals'" elevation="2" border>
             <v-toolbar flat color="white">
@@ -434,7 +443,7 @@
                 <span v-else class="text-grey text-caption">—</span>
               </template>
 
-              <!-- CATEGORY — uses getCategoryName() with ID-map fallback -->
+              <!-- CATEGORY -->
               <template #item.category="{ item }">
                 <v-chip
                   v-if="getCategoryName(item.service)"
@@ -462,10 +471,9 @@
                 </v-chip>
               </template>
 
-              <!-- ACTIONS — Approve + Reject buttons -->
+              <!-- ACTIONS -->
               <template #item.actions="{ item }">
                 <div class="d-flex ga-2 align-center">
-                  <!-- Approve -->
                   <v-btn
                     v-if="item.service?.status === 'pending'"
                     color="green"
@@ -478,7 +486,6 @@
                     Approve
                   </v-btn>
 
-                  <!-- Reject -->
                   <v-btn
                     v-if="item.service?.status === 'pending'"
                     color="red"
@@ -491,7 +498,6 @@
                     Reject
                   </v-btn>
 
-                  <!-- Already approved -->
                   <span
                     v-if="item.service?.status === 'approved'"
                     class="text-green text-caption font-weight-bold"
@@ -499,7 +505,6 @@
                     ✓ Approved
                   </span>
 
-                  <!-- Already rejected -->
                   <span
                     v-if="item.service?.status === 'rejected'"
                     class="text-red text-caption font-weight-bold"
@@ -509,6 +514,129 @@
                 </div>
               </template>
             </v-data-table>
+          </v-card>
+
+          <!-- ═══════════════════════════════════════════════
+               Publish Service (moved from Choice.vue)
+               ═══════════════════════════════════════════════ -->
+          <v-card v-else-if="currentView === 'publishService'" elevation="2" border>
+            <v-toolbar flat color="white">
+              <v-toolbar-title class="text-h6 font-weight-medium">
+                Publish Approved Service to Category
+              </v-toolbar-title>
+              <v-spacer />
+              <v-btn icon="mdi-refresh" @click="loadApprovedServices" :loading="loadingServices" />
+            </v-toolbar>
+
+            <v-divider />
+
+            <v-card-text class="pa-6">
+
+              <!-- Success banner -->
+              <v-alert
+                v-if="publishSuccess"
+                type="success"
+                variant="tonal"
+                closable
+                class="mb-4"
+                @click:close="publishSuccess = ''"
+              >
+                {{ publishSuccess }}
+              </v-alert>
+
+              <!-- Loading state -->
+              <div v-if="loadingServices" class="d-flex flex-column align-center py-10 text-grey">
+                <v-progress-circular indeterminate color="primary" class="mb-4" />
+                <p>Loading approved services…</p>
+              </div>
+
+              <!-- Empty state -->
+              <div
+                v-else-if="!loadingServices && approvedServices.length === 0 && !publishSuccess"
+                class="d-flex flex-column align-center py-10 text-grey"
+              >
+                <v-icon size="48" class="mb-3">mdi-inbox-outline</v-icon>
+                <p>No approved services available to publish right now.</p>
+              </div>
+
+              <!-- Service selection grid -->
+              <div v-else>
+                <p class="text-caption text-grey mb-4">
+                  Select an approved service below, then click <strong>Publish to Category</strong>.
+                </p>
+
+                <v-row>
+                  <v-col
+                    v-for="manager in approvedServices"
+                    :key="manager.id"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-card
+                      :variant="selectedService?.id === manager.id ? 'elevated' : 'outlined'"
+                      :color="selectedService?.id === manager.id ? 'primary' : undefined"
+                      rounded="lg"
+                      class="cursor-pointer"
+                      @click="selectedService = manager"
+                    >
+                      <v-img
+                        v-if="manager.service?.service_image_1"
+                        :src="getImageUrl(manager.service.service_image_1)"
+                        height="140"
+                        cover
+                      />
+                      <v-img v-else height="140" cover>
+                        <div class="d-flex align-center justify-center fill-height bg-grey-lighten-3">
+                          <v-icon size="48" color="grey">mdi-image-outline</v-icon>
+                        </div>
+                      </v-img>
+
+                      <v-card-title class="text-body-1 font-weight-bold pt-3">
+                        {{ manager.service?.name ?? '—' }}
+                      </v-card-title>
+
+                      <v-card-subtitle>
+                        <v-chip size="x-small" color="blue" class="mt-1">
+                          {{ getCategoryName(manager.service) }}
+                        </v-chip>
+                      </v-card-subtitle>
+
+                      <v-card-text class="text-caption text-grey pb-2">
+                        Manager: {{ manager.name }}
+                      </v-card-text>
+
+                      <v-card-actions v-if="selectedService?.id === manager.id">
+                        <v-icon color="white" size="18">mdi-check-circle</v-icon>
+                        <span class="text-caption text-white ml-1">Selected</span>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </div>
+            </v-card-text>
+
+            <!-- Footer actions -->
+            <v-divider />
+            <v-card-actions class="pa-4 justify-end">
+              <v-btn
+                variant="text"
+                @click="selectedService = null; publishSuccess = ''"
+              >
+                Clear Selection
+              </v-btn>
+              <v-btn
+                color="primary"
+                variant="elevated"
+                :disabled="!selectedService || addingService"
+                :loading="addingService"
+                prepend-icon="mdi-check"
+                rounded="pill"
+                @click="publishService"
+              >
+                Publish to Category
+              </v-btn>
+            </v-card-actions>
           </v-card>
 
         </v-fade-transition>
@@ -574,7 +702,7 @@
             <v-col cols="6"><v-text-field v-model="MeetingStore.formModel.price" label="Price ($)" type="number" variant="outlined" /></v-col>
             <v-col cols="6"><v-text-field v-model="MeetingStore.formModel.meeting_code" label="Code" variant="outlined" /></v-col>
             <v-col cols="12"><v-textarea v-model="MeetingStore.formModel.description" label="Description" variant="outlined" /></v-col>
-            <v-col cols="12"><v-textarea v-model="MeetingStore.formModel.website_url" label="Website URL" variant="outlined" /></v-col>
+            <v-col cols="12"><v-textarea v-model="TransitStore.formModel.website_url" label="Website URL" variant="outlined" /></v-col>
             <v-col cols="12"><v-file-input v-model="MeetingStore.formModel.meeting_image" label="Upload Image" variant="outlined" prepend-inner-icon="mdi-camera" /></v-col>
           </v-row>
         </v-card-text>
@@ -742,6 +870,13 @@ const selectedContact = ref(null);
 const replyText       = ref('');
 const sendingReply    = ref(false);
 
+// ── Publish Service state (moved from Choice.vue) ────────────────
+const approvedServices = ref([]);
+const loadingServices  = ref(false);
+const addingService    = ref(false);
+const selectedService  = ref(null);
+const publishSuccess   = ref('');
+
 // ── Computed ─────────────────────────────────────────────────────
 const isAdmin = computed(() =>
   userProfile.value?.role_id === 1 || userProfile.value?.role_name === 'admin'
@@ -769,15 +904,14 @@ const contactHeaders = [
 ];
 
 const clickHeaders = [
-  { title: "User ID",        key: "user_id",        align: "start" },
-  { title: "User Name",      key: "user_name" },
-  { title: "Service ID",     key: "service_id",     align: "start" },
-  { title: "Service URL",    key: "service_name" },
-  { title: "Total Clicks",   key: "total_clicks",   align: "center" },
-  { title: "Last Clicked At",key: "last_clicked_at" },
+  { title: "User ID",         key: "user_id",         align: "start" },
+  { title: "User Name",       key: "user_name" },
+  { title: "Service ID",      key: "service_id",      align: "start" },
+  { title: "Service URL",     key: "service_name" },
+  { title: "Total Clicks",    key: "total_clicks",    align: "center" },
+  { title: "Last Clicked At", key: "last_clicked_at" },
 ];
 
-// FIX: 'category' (not 'category_id') so the #item.category slot is triggered
 const approvalHeaders = [
   { title: 'ID',           value: 'id' },
   { title: 'Manager Name', value: 'name' },
@@ -795,7 +929,6 @@ const getImageUrl = (path) => {
   return `http://127.0.0.1:8000/storage/${path}`;
 };
 
-// Maps category_id → human-readable name (mirrors CategorySeeder exactly)
 const categoryMap = {
   1: 'Vacation Hotels',
   2: 'Transit Hotels',
@@ -804,7 +937,6 @@ const categoryMap = {
   5: 'Transportation Services/Guided Tours',
 };
 
-// Tries the eager-loaded relationship first, falls back to the ID map
 const getCategoryName = (service) => {
   if (service?.category?.name) return service.category.name;
   if (service?.category_id)    return categoryMap[service.category_id] ?? `Category ${service.category_id}`;
@@ -849,6 +981,47 @@ const rejectManager = async (manager) => {
   }
 };
 
+// ── Publish Service functions (moved from Choice.vue) ────────────
+const loadApprovedServices = async () => {
+  loadingServices.value  = true;
+  approvedServices.value = [];
+  publishSuccess.value   = '';
+  try {
+    const res = await api.get('/managers');
+    const managers = res.data.managers ?? res.data ?? [];
+    approvedServices.value = managers.filter(
+      (m) => m.service && m.service.status === 'approved'
+    );
+  } catch (err) {
+    console.error('Failed to load approved services', err);
+  } finally {
+    loadingServices.value = false;
+  }
+};
+
+const openPublishView = async () => {
+  currentView.value = 'publishService';
+  await loadApprovedServices();
+};
+
+const publishService = async () => {
+  if (!selectedService.value) return;
+  addingService.value = true;
+  try {
+    await api.post(`/managers/${selectedService.value.id}/publish`);
+    publishSuccess.value = `"${selectedService.value.service?.name ?? 'Service'}" has been added to ${getCategoryName(selectedService.value.service)} successfully!`;
+    approvedServices.value = approvedServices.value.filter(
+      (m) => m.id !== selectedService.value.id
+    );
+    selectedService.value = null;
+  } catch (err) {
+    console.error('Failed to publish service', err);
+    alert('Failed to add service. Please try again.');
+  } finally {
+    addingService.value = false;
+  }
+};
+
 // ── Admin profile ────────────────────────────────────────────────
 const fetchAdminProfile = async () => {
   try {
@@ -874,7 +1047,7 @@ const fetchUsers = async () => {
 
 // ── Contacts ─────────────────────────────────────────────────────
 const loadContacts = async () => {
-  currentView.value = 'contacts';
+  currentView.value     = 'contacts';
   loadingContacts.value = true;
   try {
     const endpoint = isAdmin.value ? '/contactuses' : '/my-contacts';
@@ -901,7 +1074,7 @@ const deleteContact = async (id) => {
 
 const viewContact = (contact) => {
   selectedContact.value = contact;
-  viewDialog.value = true;
+  viewDialog.value      = true;
 };
 
 const openReplyDialog = (contact) => {
@@ -910,14 +1083,14 @@ const openReplyDialog = (contact) => {
     return;
   }
   selectedContact.value = contact;
-  replyText.value = contact.reply || '';
-  viewDialog.value = false;
-  replyDialog.value = true;
+  replyText.value       = contact.reply || '';
+  viewDialog.value      = false;
+  replyDialog.value     = true;
 };
 
 const closeReplyDialog = () => {
-  replyDialog.value = false;
-  replyText.value = '';
+  replyDialog.value     = false;
+  replyText.value       = '';
   selectedContact.value = null;
 };
 

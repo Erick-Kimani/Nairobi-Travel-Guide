@@ -23,7 +23,6 @@ export const useTransportsStore = defineStore('transports', {
           id:          s.id,
           name:        s.name        ?? '—',
           description: s.description ?? '',
-          price:       s.price       ? `Ksh ${Number(s.price).toLocaleString()} / night` : 'Contact for pricing',
           image:       s.service_image_1
                          ? `http://127.0.0.1:8000/storage/${s.service_image_1}`
                          : '/images/Picture 30 .jpg',

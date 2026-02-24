@@ -10,7 +10,7 @@
               <div class="mb-8">
                 <h2 class="formal-title">Contact Us</h2>
                 <div class="gold-divider"></div>
-                <p class="subtitle mt-2">Inquiries & Private Bookings</p>
+                <p class="subtitle mt-2">Inquiries & Guidance</p>
               </div>
 
               <v-form @submit.prevent="submitForm">
@@ -425,7 +425,7 @@ const fetchMessageHistory = async () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.5px;
 }

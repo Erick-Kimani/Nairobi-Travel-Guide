@@ -57,10 +57,7 @@ async function handleVisit() {
             <h1 class="text-h2 font-weight-black text-grey-darken-4 mb-6 leading-tight">{{ transport.name }}</h1>
             <p class="text-h6 text-grey-darken-1 mb-8 leading-relaxed">{{ transport.description }}</p>
             <v-divider class="mb-8" />
-            <div class="mb-10">
-              <div class="text-subtitle-1 text-grey-lighten-1 mb-1">Rate</div>
-              <div class="text-h4 font-weight-bold text-blue-darken-3">Ksh {{ numericPrice.toLocaleString() }}</div>
-            </div>
+           
             <v-divider class="mb-8" />
             <div class="pt-6">
               <div class="text-caption text-grey-lighten-1 mb-2">OFFICIAL WEBSITE</div>

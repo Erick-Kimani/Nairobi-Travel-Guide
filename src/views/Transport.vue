@@ -77,7 +77,6 @@ function viewDetails(transport) {
               </div>
               <v-card-text class="pt-4">
                 <h3 class="card-title">{{ transport.name }}</h3>
-                <p class="price">Price: {{ transport.price }}</p>
                 <p class="description">{{ transport.description }}</p>
               </v-card-text>
               <v-card-actions class="px-4 pb-4 mt-auto">
@@ -119,8 +118,7 @@ function viewDetails(transport) {
 .image-wrapper { overflow: hidden; border-top-left-radius: 60px; border-top-right-radius: 60px; }
 .details-btn { min-height: 36px !important; padding: 6px 0 !important; font-weight: 600; letter-spacing: 0.5px; border-radius: 69px; }
 .title-glow { text-shadow: 0 0 15px rgba(255,215,0,0.4); }
-.card-title { font-size: 1.4rem; font-weight: 700; color: #fff; }
-.price { font-weight: bold; color: #ff9800; font-size: 1.1rem; }
+.card-title { font-size: 1.4rem; font-weight: 700; color: #ff9800; }
 .description { font-size: 0.95rem; color: #e0e0e0; }
 .text-primary { color: #ffd700 !important; font-size: 3.5rem !important; }
 </style>

@@ -18,24 +18,18 @@ const choices = ref([
   },
   {
     id: 3,
-    title: 'Meeting Rooms',
-    description: 'Professional spaces for corporate events and workshops.',
-    link: '/meeting',
-    image: '/images/Picture 28 .jpg'
+    title: 'Airport Transfers',
+    description: 'Comfortable and reliable airport transfer services.',
+    link: '/airport',
+    image: '/images/Air port transfer 2.png'
   },
+  
   {
     id: 4,
-    title: 'Service Apartments',
-    description: 'Fully furnished apartments for long-term stays.',
-    link: '/service',
-    image: '/images/Picture 29 .jpg'
-  },
-  {
-    id: 5,
-    title: 'Transportation Services/Guided Tours',
+    title: 'Tours and Safaris',
     description: 'Comfortable transit options and curated local experiences.',
-    link: '/transport',
-    image: '/images/Picture 30 .jpg'
+    link: '/safari',
+    image: 'public/images/4 wheel drive.jpg'
   }
 ])
 </script>

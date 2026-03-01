@@ -5,7 +5,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 const images = [
   "public/images/Picture 1 .jpg",
   "public/images/Picture 2 .jpg",
-  "public/images/Picture 3 .jpg",
+  "public/images/4 wheel drive.jpg",
   "public/images/Picture 25 .jpg",
   "public/images/Picture 29 .jpg",
   "public/images/Picture 35 .jpg",
@@ -47,12 +47,15 @@ const backgroundStyle = computed(() => ({
       <h1>Luxury Stays, Unforgettable Experiences</h1>
       <p>
         Discover premium hotels, resorts, and lodges tailored for comfort,
-        elegance, and relaxation.
+        elegance, and relaxatio
       </p>
 
       <div class="hero-actions">
-        <router-link to="/choice" class="btn-primary">Explore Hotels</router-link>
-        <router-link to="/contactus" class="btn-secondary">Contact Us</router-link>
+        <router-link to="/choice" class="btn-primary">Explore</router-link>
+        <router-link to="/vacation" class="btn-secondary">Vacation Hotel</router-link>
+        <router-link to="/transit" class="btn-secondary">Transit Lodges</router-link>
+        <router-link to="/safari" class="btn-secondary">Tours & Safaris</router-link>
+        <router-link to="/airport" class="btn-secondary">Airport Transfers</router-link>
       </div>
     </div>
   </section>

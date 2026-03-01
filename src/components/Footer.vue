@@ -31,15 +31,15 @@ const handleLogout = async () => {
           Redefining luxury travel with curated experiences in the world's 
           most breathtaking locations. Your comfort is our heritage.
         </p>
-        <div class="social-links">
+        <!-- <div class="social-links">
           <a href="https://www.facebook.com/" aria-label="Facebook" class="social-icon">FB</a>
           <a href="https://www.instagram.com/" aria-label="Instagram" class="social-icon">IG</a>
           <a href="https://twitter.com/" aria-label="Twitter" class="social-icon">TW</a>
           <a href="https://www.linkedin.com/" aria-label="LinkedIn" class="social-icon">LI</a>
           
-        </div>
+        </div> -->
       <br>
-        <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/specialregistration" />
+        <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/contactus" />
       </div>
 
       <div class="footer-section links">
@@ -60,15 +60,15 @@ const handleLogout = async () => {
           <li><a href="#">FAQs</a></li>
           <li><a href="#">Privacy Policy</a></li>
           <li><a href="#">Terms & Conditions</a></li>
-          <li><a href="#">Booking Guide</a></li>
+         
         </ul>
       </div>
 
       <div class="footer-section contact">
         <h3>Contact Us</h3>
-        <p>123 Luxury Lane, Suite 500<br>Beverly Hills, CA 90210</p>
-        <p class="contact-item"><strong>Phone:</strong> +1 (555) 000-1234</p>
-        <p class="contact-item"><strong>Email:</strong> reservations@luxestays.com</p>
+        <!-- <p>123 Luxury Lane, Suite 500<br>Beverly Hills, CA 90210</p> -->
+        <p class="contact-item"><strong>Phone:</strong> +254 791018109</p>
+        <p class="contact-item"><strong>Email:</strong> harrymephis@gmail.com</p>
         
         <!-- Logout Button (only shows when authenticated) -->
         <div v-if="isAuthenticated" class="logout-section">

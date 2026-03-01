@@ -44,9 +44,17 @@ async function handleVisit() {
 
       <v-col cols="12" md="6" lg="5" class="relative overflow-hidden">
         <div class="full-page-inset">
-          <v-img :src="vacation?.image" cover height="100vh" class="main-image">
-            <v-btn icon="mdi-arrow-left" class="ma-6 floating-back-btn" elevation="4" @click="goBack" />
-          </v-img>
+
+        <v-img 
+  :src="vacation?.image" 
+  cover 
+  height="100vh" 
+  width="100%"
+  position="center"
+  class="main-image">
+  <v-btn icon="mdi-arrow-left" class="ma-6 floating-back-btn" elevation="4" @click="goBack" />
+</v-img>
+
         </div>
       </v-col>
 

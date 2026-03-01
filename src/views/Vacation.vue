@@ -73,10 +73,11 @@ function viewDetails(vacation) {
           <div class="card-border-wrapper">
             <v-card class="item-card" elevation="0" @click="viewDetails(vacation)">
               <div class="image-wrapper">
-                <v-img :src="vacation.image" height="200" cover />
+                <v-img :src="vacation.image" height="230" cover />
               </div>
               <v-card-text class="pt-4">
-                <h3 class="card-title">{{ vacation.name }}</h3>
+                <h3 class="card-title">{{ vacation.name }}:</h3>
+                <br>
                 <p class="description">{{ vacation.description }}</p>
               </v-card-text>
               <v-card-actions class="px-4 pb-4 mt-auto">

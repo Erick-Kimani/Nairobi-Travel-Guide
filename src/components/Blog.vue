@@ -1,269 +1,486 @@
 <template>
-  <v-container fluid class="blog-background py-12">
-
-    <!-- HERO -->
-    <v-row class="mb-16 align-center">
-      <v-col cols="12" md="6">
-        <h1 class="text-h3 font-weight-bold mb-4 text-white">
-          Discover Luxe Lodging: Your Gateway to Premium Experiences
-        </h1>
-        <p class="text-body-1 mb-6 text-white">
-          Luxe Lodging connects you with luxury hotels, dining, transport,
-          and curated travel experiences across Kenya.
+  <div class="blog-page">
+    <!-- Hero Header -->
+    <section class="blog-hero">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <span class="hero-eyebrow">Our Journal</span>
+        <h1 class="hero-title">Stories &amp; Insights</h1>
+        <p class="hero-catchphrase">
+          <span class="catch-line">Where Every Journey</span>
+          <span class="catch-accent">Becomes a Story Worth Telling.</span>
         </p>
-        <v-btn color="deep-orange-darken-2" size="large" @click="goToLogin">
-          Login to Explore More
-        </v-btn>
-      </v-col>
-
-      <v-col cols="12" md="6">
-        <v-img
-          src="public/images/Picture 1 .jpg"
-          height="420"
-          cover
-          class="rounded-xl hero-image"
-        />
-      </v-col>
-    </v-row>
-
-    <!-- ALTERNATING BLOG SECTIONS (RETAINED) -->
-    <v-row
-      v-for="(section, index) in blogSections"
-      :key="index"
-      class="my-20 align-center"
-    >
-      <v-col cols="12" md="6" :order-md="index % 2 === 0 ? 1 : 2">
-        <v-img
-          :src="section.image"
-          height="360"
-          cover
-          class="rounded-xl blog-image"
-        />
-      </v-col>
-
-      <v-col cols="12" md="6" :order-md="index % 2 === 0 ? 2 : 1">
-        <h2 class="text-h4 font-weight-bold mb-4 text-white">
-          {{ section.title }}
-        </h2>
-        <p class="text-body-1 text-white">
-          {{ section.description }}
-        </p>
-      </v-col>
-    </v-row>
-
-    <!-- GLASS CARD CAROUSEL -->
-    <v-carousel
-      cycle
-      interval="3200"
-      height="440"
-      hide-delimiter-background
-      show-arrows-on-hover
-      class="mt-10"
-    >
-      <v-carousel-item v-for="(chunk, i) in carouselChunks" :key="i">
-        <v-row class="fill-height pa-6" justify="center" align="center">
-          <v-col
-            v-for="(item, index) in chunk"
-            :key="index"
-            cols="12"
-            sm="4"
-          >
-            <v-card class="glass-card">
-              <v-img :src="item.image" height="220" cover class="rounded-t-xl" />
-              <v-card-title class="font-weight-bold">
-                {{ item.title }}
-              </v-card-title>
-              <v-card-text>{{ item.text }}</v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-carousel-item>
-    </v-carousel>
-
-    <!-- FAN STACKED CARDS (ENHANCED) -->
-    <v-row class="mt-20 justify-center">
-      <v-col cols="12" md="10">
-        <h2 class="text-h4 font-weight-bold text-center mb-12 text-white">
-          Our Premium Services
-        </h2>
-
-        <div class="fan-container">
-          <v-card
-            v-for="(service, index) in services"
-            :key="service.title"
-            class="fan-card glass-card"
-            :style="fanStyle(index)"
-          >
-            <v-img
-              :src="service.image"
-              height="220"
-              cover
-              class="rounded-t-xl"
-            />
-            <v-card-title class="font-weight-bold">
-              {{ service.title }}
-            </v-card-title>
-            <v-card-text>
-              {{ service.description }}
-            </v-card-text>
-          </v-card>
+        <p class="hero-subtitle">Explore our latest articles, updates and perspectives</p>
+        <div class="hero-divider">
+          <span></span><span class="diamond">◆</span><span></span>
         </div>
-      </v-col>
-    </v-row>
+      </div>
+    </section>
 
-    <!-- CTA -->
-    <v-row class="mt-24 justify-center">
-      <v-col cols="12" md="8" class="text-center">
-        <h2 class="text-h4 font-weight-bold mb-4 text-white">
-          Ready to Unlock Your Luxe Experience?
-        </h2>
-        <p class="text-white mb-6">
-          Sign in and start planning your perfect stay today.
-        </p>
-        <v-btn color="deep-orange-darken-2" size="large" @click="goToSignup">
-          Proceed
-        </v-btn>
-      </v-col>
-    </v-row>
+    <!-- Blog Entries -->
+    <section class="blog-section">
+      <div class="blog-container">
 
-  </v-container>
+        <!-- Empty State -->
+        <div v-if="!loading && blogs.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+              <rect x="8" y="12" width="48" height="40" rx="4" stroke="#C9A96E" stroke-width="2" stroke-dasharray="4 3"/>
+              <line x1="18" y1="24" x2="46" y2="24" stroke="#C9A96E" stroke-width="2"/>
+              <line x1="18" y1="32" x2="46" y2="32" stroke="#C9A96E" stroke-width="2"/>
+              <line x1="18" y1="40" x2="36" y2="40" stroke="#C9A96E" stroke-width="2"/>
+            </svg>
+          </div>
+          <h3 class="empty-title">No Posts Yet</h3>
+          <p class="empty-desc">Stories are being crafted. Check back soon.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div v-if="loading" class="loading-state">
+          <div class="loader-ring"></div>
+          <p>Loading stories…</p>
+        </div>
+
+        <!-- Blog Cards with Alternating Layout -->
+        <article
+          v-for="(blog, index) in blogs"
+          :key="blog.id"
+          class="blog-entry"
+          :class="index % 2 === 0 ? 'entry--image-left' : 'entry--image-right'"
+        >
+          <!-- Title always centered above -->
+          <div class="entry-title-row">
+            <div class="entry-index">{{ String(index + 1).padStart(2, '0') }}</div>
+            <h2 class="entry-title">{{ blog.blog_name }}</h2>
+            <div class="entry-line"></div>
+          </div>
+
+          <!-- Content: image + description swap sides -->
+          <div class="entry-body">
+            <!-- Image Card -->
+            <div class="entry-image-wrap">
+              <div class="entry-image-card">
+                <img
+                  v-if="blog.blog_image"
+                  :src="`http://127.0.0.1:8000/storage/${blog.blog_image}`"
+                  :alt="blog.blog_name"
+                  class="entry-image"
+                />
+                <div v-else class="entry-image-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <rect x="4" y="8" width="40" height="32" rx="3" stroke="#C9A96E" stroke-width="1.5"/>
+                    <circle cx="16" cy="20" r="4" stroke="#C9A96E" stroke-width="1.5"/>
+                    <path d="M4 34L14 24L22 32L30 22L44 34" stroke="#C9A96E" stroke-width="1.5" stroke-linejoin="round"/>
+                  </svg>
+                  <span>No Image</span>
+                </div>
+                <div class="image-overlay-badge">{{ getCategoryLabel(index) }}</div>
+              </div>
+            </div>
+
+            <!-- Description Card -->
+            <div class="entry-desc-wrap">
+              <div class="entry-desc-card">
+                <div class="desc-ornament">✦</div>
+                <p class="entry-description">{{ blog.blog_description }}</p>
+                <div class="desc-meta">
+                  <span class="desc-date">{{ formatDate(blog.created_at) }}</span>
+                  <span class="desc-dot">·</span>
+                  <span class="desc-read">{{ readTime(blog.blog_description) }} min read</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Separator -->
+          <div class="entry-separator" v-if="index < blogs.length - 1">
+            <span></span><span class="sep-diamond">◇</span><span></span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import { computed } from 'vue'
+import { ref, onMounted } from 'vue'
+import api from '@/services/api'
 
-const router = useRouter()
-const goToLogin = () => router.push('/login')
-const goToSignup = () => router.push('/signup')
+const blogs   = ref([])
+const loading = ref(false)
 
-const blogSections = [
-  {
-    title: 'Luxury Hotels & Resorts',
-    description:
-      'Handpicked hotels offering world-class amenities and breathtaking views.',
-    image: 'public/images/Picture 10 .jpg'
-  },
-  {
-    title: 'Fine Dining Experiences',
-    description:
-      'Discover gourmet restaurants serving authentic local and global cuisine.',
-    image: 'public/images/Picture 15 .jpg'
-  },
-  {
-    title: 'Reliable Transport Services',
-    description:
-      'Travel safely and comfortably with trusted transport providers.',
-    image: 'public/images/Picture 20 .jpg'
-  },
-  {
-    title: 'Professional Tour Guides',
-    description:
-      'Explore hidden gems with knowledgeable local experts.',
-    image: 'public/images/Picture 25 .jpg'
-  }
-]
+const categoryLabels = ['Culture', 'Travel', 'Lifestyle', 'Business', 'Innovation', 'Nature']
 
-const carouselItems = [
-  { title: 'Luxury Hotels', text: 'Elite accommodation.', image: 'public/images/Picture 1 .jpg' },
-  { title: 'Fine Dining', text: 'Premium cuisine.', image: 'public/images/Picture 2 .jpg' },
-  { title: 'Transport', text: 'Comfort & safety.', image: 'public/images/Picture 3 .jpg' },
-  { title: 'Safari', text: 'Wildlife luxury.', image: 'public/images/Picture 4 .jpg' },
-  { title: 'Beach', text: 'Ocean retreats.', image: 'public/images/Picture 5 .jpg' },
-  { title: 'Guides', text: 'Local expertise.', image: 'public/images/Picture 6 .jpg' }
-]
+const getCategoryLabel = (index) => categoryLabels[index % categoryLabels.length]
 
-const carouselChunks = computed(() => {
-  const chunks = []
-  for (let i = 0; i < carouselItems.length; i += 3) {
-    chunks.push(carouselItems.slice(i, i + 3))
-  }
-  return chunks
-})
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  })
+}
 
-const services = [
-  { title: 'Luxury Hotels', description: 'Five-star accommodation.', image: 'public/images/Picture 30 .jpg' },
-  { title: 'Restaurants', description: 'Elite dining experiences.', image: 'public/images/Picture 22 .jpg' },
-  { title: 'Transport', description: 'Executive travel.', image: 'public/images/Picture 18 .jpg' },
-  { title: 'Safari Tours', description: 'Premium safari packages.', image: 'public/images/Picture 4 .jpg' },
-  { title: 'Beach Getaways', description: 'Luxury coastal escapes.', image: 'public/images/Picture 23 .jpg' }
-]
+const readTime = (text) => {
+  if (!text) return 1
+  return Math.max(1, Math.ceil(text.split(' ').length / 200))
+}
 
-const fanStyle = (index) => {
-  const center = Math.floor(services.length / 2)
-  const offset = (index - center) * 130
-  const rotation = (index - center) * 8
-
-  return {
-    transform: `translateX(${offset}px) rotate(${rotation}deg)`,
-    zIndex: index
+const fetchBlogs = async () => {
+  loading.value = true
+  try {
+    const res = await api.get('/blogs')
+    blogs.value = res.data.Blog || res.data || []
+  } catch (err) {
+    console.error('Failed to fetch blogs', err)
+    blogs.value = []
+  } finally {
+    loading.value = false
   }
 }
+
+onMounted(fetchBlogs)
 </script>
 
 <style scoped>
-.blog-background {
-  min-height: 100vh;
-  background-image: url('public/images/Nairobi National Park .jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  position: relative;
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+/* ─── Variables ─────────────────────────────────────────────── */
+:root {
+  --cream: #FAF7F2;
+  --ink: #1A1612;
+  --gold: #C9A96E;
+  --gold-light: #E8D5B0;
+  --warm-grey: #8C8075;
+  --card-bg: #FFFFFF;
+  --border: #E8E2D9;
 }
 
-.blog-background::before {
-  content: '';
+/* ─── Page ─────────────────────────────────────────────────── */
+.blog-page {
+  min-height: 100vh;
+  background: var(--cream);
+  font-family: 'Jost', sans-serif;
+  color: var(--ink);
+}
+
+/* ─── Hero ─────────────────────────────────────────────────── */
+.blog-hero {
+  position: relative;
+  background: var(--ink);
+  padding: 100px 40px 80px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-texture {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,169,110,0.06) 39px, rgba(201,169,110,0.06) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,169,110,0.06) 39px, rgba(201,169,110,0.06) 40px);
+  pointer-events: none;
 }
 
-.blog-background > * {
-  position: relative;
-  z-index: 1;
+.hero-content { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
 }
 
-.glass-card {
-  backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.75);
-  border-radius: 34px;
-  border: 7px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
-  transition: transform 0.45s ease, box-shadow 0.45s ease;
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 1;
+  color: #ecb350;
+  margin: 0 0 16px;
+  letter-spacing: -1px;
 }
 
-/* FAN STACK */
-.fan-container {
-  position: relative;
-  height: 520px;
+.hero-subtitle {
+  font-weight: 300;
+  font-size: 16px;
+  color: rgba(26, 22, 17, 0.55);
+  letter-spacing: 1px;
+  margin: 0 0 36px;
+}
+
+.hero-catchphrase {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 28px;
+}
+
+.catch-line {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(22px, 3.5vw, 36px);
+  color: rgba(180, 83, 18, 0.85);
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+.catch-accent {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(26px, 4vw, 42px);
+  background: linear-gradient(90deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+  line-height: 1.25;
+}
+
+.hero-divider {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 16px;
+}
+.hero-divider span:not(.diamond) {
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+.diamond { color: var(--gold); font-size: 10px; }
+
+/* ─── Blog Section ──────────────────────────────────────────── */
+.blog-section { padding: 80px 0 120px; }
+
+.blog-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  
+}
+
+/* ─── Empty / Loading ───────────────────────────────────────── */
+.empty-state, .loading-state {
+  text-align: center;
+  padding: 100px 20px;
+  color: var(--warm-grey);
+}
+.empty-icon { margin-bottom: 24px; opacity: 0.6; }
+.empty-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+.empty-desc { font-size: 15px; font-weight: 300; margin: 0; }
+
+.loader-ring {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Blog Entry ────────────────────────────────────────────── */
+.blog-entry { margin-bottom: 20px; }
+
+/* ─── Title Row (always centered) ──────────────────────────── */
+.entry-title-row {
+  text-align: center;
+  position: relative;
+  padding: 0 0 36px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
-.fan-card {
+.entry-index {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+
+.entry-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--ink);
+  margin: 0 0 20px;
+  line-height: 1.15;
+  max-width: 700px;
+}
+
+.entry-line {
+  width: 48px;
+  height: 2px;
+  background: var(--gold);
+}
+
+/* ─── Entry Body (alternating) ──────────────────────────────── */
+.entry-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+/* Image LEFT (even) — image col first */
+.entry--image-left .entry-image-wrap { order: 1; }
+.entry--image-left .entry-desc-wrap  { order: 2; }
+
+/* Image RIGHT (odd) — desc col first, image second */
+.entry--image-right .entry-image-wrap { order: 2; }
+.entry--image-right .entry-desc-wrap  { order: 1; }
+
+/* ─── Image Card ────────────────────────────────────────────── */
+.entry-image-card {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  box-shadow: 0 20px 60px rgba(26,22,18,0.12);
+  background: var(--border);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.entry-image-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 32px 80px rgba(26,22,18,0.18);
+}
+
+.entry-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.entry-image-card:hover .entry-image { transform: scale(1.03); }
+
+.entry-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--warm-grey);
+  font-size: 12px;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #F5F0E8 0%, #EDE5D6 100%);
+}
+
+.image-overlay-badge {
   position: absolute;
-  width: 320px;
-  cursor: pointer;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(26,22,18,0.75);
+  color: var(--gold-light);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 2px;
+  backdrop-filter: blur(4px);
 }
 
-.fan-card:hover {
-  transform: translateX(0) rotate(0deg) scale(1.1) !important;
-  z-index: 999;
-  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.55);
+/* ─── Description Card ─────────────────────────────────────── */
+.entry-desc-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 40px 44px;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(26,22,18,0.05);
 }
 
-.hero-image,
-.blog-image {
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+.desc-ornament {
+  color: var(--gold);
+  font-size: 18px;
+  margin-bottom: 20px;
+  display: block;
+  opacity: 0.7;
 }
 
-.rounded-xl {
-  border-radius: 22px;
+.entry-description {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.75;
+  color: #3D3530;
+  margin: 0 0 28px;
 }
 
-.rounded-t-xl {
-  border-top-left-radius: 22px;
-  border-top-right-radius: 22px;
+.desc-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--warm-grey);
+  letter-spacing: 0.5px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.desc-dot { color: var(--gold); }
+
+/* ─── Separator ─────────────────────────────────────────────── */
+.entry-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 60px 0 50px;
+}
+.entry-separator span:not(.sep-diamond) {
+  flex: 1;
+  max-width: 200px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border));
+}
+.entry--image-right + .blog-entry .entry-separator span:not(.sep-diamond):first-child {
+  background: linear-gradient(to left, transparent, var(--border));
+}
+.sep-diamond {
+  color: var(--gold);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .blog-hero { padding: 70px 24px 60px; }
+
+  .entry-body {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .entry--image-left .entry-image-wrap,
+  .entry--image-right .entry-image-wrap { order: 1; }
+  .entry--image-left .entry-desc-wrap,
+  .entry--image-right .entry-desc-wrap  { order: 2; }
+
+  .entry-desc-card { padding: 28px 24px; }
+  .blog-container { padding: 0 20px; }
+  .blog-section { padding: 60px 0 80px; }
 }
 </style>

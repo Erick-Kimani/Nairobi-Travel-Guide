@@ -11,12 +11,10 @@ import Transit from "@/views/Transit.vue"
 import TransitDetails from "@/views/TransitDetails.vue"
 import Administrator from "@/views/Administrator.vue"
 import Choice from "@/views/Choice.vue"
-import Meeting from "@/views/Meeting.vue"
-import MeetingDetails from "@/views/MeetingDetails.vue"
-import Service from "@/views/Service.vue"
-import ServiceDetails from "@/views/ServiceDetails.vue"
-import Transport from "@/views/Transport.vue"
-import TransportDetails from "@/views/TransportDetails.vue"
+import Safari from "@/views/Safari.vue"
+import SafariDetails from "@/views/SafariDetails.vue"
+import Airport from "@/views/Airport.vue"
+import AirportDetails from "@/views/AirportDetails.vue"
 import Vacation from "@/views/Vacation.vue"
 import VacationDetails from "@/views/VacationDetails.vue"
 import SpecialRegistration from "@/views/SpecialRegistration.vue"
@@ -123,40 +121,29 @@ const routes = [
     component: TransitDetails,
     meta: { requiresAuth: true }
   },
+ 
   {
-    path: "/meeting",
-    name: "meeting",
-    component: Meeting,
+    path: "/safari",
+    name: "safari",
+    component: Safari,
     meta: { requiresAuth: true }
   },
   {
-    path: "/meetingdetails",
-    name: "meetingdetails",
-    component: MeetingDetails,
+    path: "/safaridetails",
+    name: "safaridetails",
+    component: SafariDetails,
     meta: { requiresAuth: true }
   },
   {
-    path: "/service",
-    name: "service",
-    component: Service,
+    path: "/airport",
+    name: "airport",
+    component: Airport,
     meta: { requiresAuth: true }
   },
   {
-    path: "/servicedetails",
-    name: "servicedetails",
-    component: ServiceDetails,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: "/transport",
-    name: "transport",
-    component: Transport,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: "/transportdetails",
-    name: "transportdetails",
-    component: TransportDetails,
+    path: "/airportdetails",
+    name: "airportdetails",
+    component: AirportDetails,
     meta: { requiresAuth: true }
   },
    

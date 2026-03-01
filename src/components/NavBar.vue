@@ -4,7 +4,7 @@
 
       <!-- Brand -->
       <router-link to="/" class="nav-brand">
-        <span class="logo-text luxury-title">Luxe Lodging</span>
+        <span class="logo-text luxury-title">Luxe Stays</span>
       </router-link>
 
       <!-- Navigation -->
@@ -17,7 +17,7 @@
         <!-- 🏨 Explore Hotels Dropdown -->
         <li class="dropdown" @mouseenter="showHotelsDropdown = true" @mouseleave="showHotelsDropdown = false">
           <button class="nav-link dropdown-toggle">
-            Explore Hotels
+            Plan Your Trip
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-icon" :class="{ 'rotate': showHotelsDropdown }">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -44,33 +44,25 @@
                 Transit Hotels
               </router-link>
             </li>
+            
             <li>
-              <router-link to="/meeting" class="dropdown-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                </svg>
-                Meeting Rooms
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/service" class="dropdown-item">
+              <router-link to="/airport" class="dropdown-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                   <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                Service Apartments
+                Airport Transfers
               </router-link>
             </li>
             <li>
-              <router-link to="/transport" class="dropdown-item">
+              <router-link to="/safari" class="dropdown-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="1" y="3" width="15" height="13"></rect>
                   <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
                   <circle cx="5.5" cy="18.5" r="2.5"></circle>
                   <circle cx="18.5" cy="18.5" r="2.5"></circle>
                 </svg>
-                Transportation & Tours
+                Tours and Safaris
               </router-link>
             </li>
           </ul>
@@ -146,7 +138,6 @@
 import { ref, watch } from "vue"
 import { useRoute } from "vue-router"
 import AuthService from "@/services/authService"
-import TokenService from "@/services/TokenService"
 
 const route = useRoute()
 
@@ -227,6 +218,7 @@ watch(
     #f5e6b0,
     #b8962e
   );
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 

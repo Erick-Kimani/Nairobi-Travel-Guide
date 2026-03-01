@@ -33,7 +33,7 @@ function viewDetails(transit) {
   <div class="page-container">
     <div class="hero-header">
       <div class="hero-image-container">
-        <img src="/images/Picture 25 .jpg" alt="Header Image" class="hero-image" />
+        <img src="/images/Picture 29 .jpg" alt="Header Image" class="hero-image" />
         <div class="hero-overlay">
           <h1 class="text-center text-3xl font-bold text-primary title-glow">
             Our Transit Lodges
@@ -79,7 +79,7 @@ function viewDetails(transit) {
           <div class="card-border-wrapper">
             <v-card class="transit-card" elevation="0" @click="viewDetails(transit)">
               <div class="image-wrapper">
-                <v-img :src="transit.image" height="200" cover />
+                <v-img :src="transit.image" height="230" cover />
               </div>
 
               <v-card-text class="pt-4">

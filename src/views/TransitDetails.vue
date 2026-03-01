@@ -13,7 +13,7 @@ const transit = computed(() => store.selectedTransit)
 const currentUser = computed(() => authStore.user)
 
 function goBack() {
-  router.push('/transits')
+  router.push('/transit')
 }
 
 const numericPrice = computed(() => {

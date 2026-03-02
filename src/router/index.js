@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 
 // Views
 import Home from "@/views/Home.vue"
-import AboutUs from "@/views/Aboutus.vue"
+import Explore from "@/views/Explore.vue"
 import Login from "@/views/Login.vue"
 import Signup from "@/views/Signup.vue"
 import ContactUs from "@/views/ContactUs.vue"
@@ -26,6 +26,7 @@ import Blog from "@/components/Blog.vue"
 import api from "@/services/api"
 import TokenService from "@/services/TokenService"
 import AuthService from "@/services/authService"
+import path from "path"
 
 const routes = [
   /* =========================
@@ -37,7 +38,7 @@ const routes = [
     name: "blog",
     component: Blog,
     meta: {
-      hideLayout: true // 🚫 Hide Navbar & Footer
+      hideLayout: false // 🚫 Hide Navbar & Footer
     }
   },
   {
@@ -79,12 +80,7 @@ const routes = [
     component: Home,
     meta: { requiresAuth: true }
   },
-  {
-    path: "/aboutus",
-    name: "aboutus",
-    component: AboutUs,
-    meta: { requiresAuth: true }
-  },
+  
   {
     path: "/choice",
     name: "choice",
@@ -95,6 +91,12 @@ const routes = [
     path: "/contactus",
     name: "contactus",
     component: ContactUs,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/explore",
+    name: "explore",
+    component: Explore,
     meta: { requiresAuth: true }
   },
   {

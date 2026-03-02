@@ -31,7 +31,15 @@
         <v-list-item prepend-icon="mdi-cursor-default-click" title="Click Monitoring" :active="currentView === 'clicks'" @click="currentView = 'clicks'" rounded="lg" />
         <v-list-item prepend-icon="mdi-clipboard-check" title="Manager Approval" :active="currentView === 'approvals'" @click="loadManagerApprovals(); currentView = 'approvals'" rounded="lg" />
         <v-list-item prepend-icon="mdi-plus-circle-outline" title="Published Service" :active="currentView === 'publishService'" @click="openPublishView" rounded="lg" />
-        <v-list-item prepend-icon="mdi-post-outline" title="Blog Management" :active="currentView === 'blogs'" @click="loadBlogs(); currentView = 'blogs'" rounded="lg" />
+
+        <!-- ✦ NEW Blog nav item -->
+        <v-list-item
+          prepend-icon="mdi-post-outline"
+          title="Blog Management"
+          :active="currentView === 'blogs'"
+          @click="loadBlogs(); currentView = 'blogs'"
+          rounded="lg"
+        />
       </v-list>
 
       <template v-slot:append>
@@ -578,7 +586,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, nextTick } from "vue";
 import api from "@/services/api";
 import { useVacationStore } from "@/stores/vacation";
 import { useTransitStore } from "@/stores/transit";
@@ -633,12 +641,12 @@ const blogForm = ref({
 });
 
 const blogHeaders = [
-  { title: 'ID',          value: 'id',          width: 60 },
-  { title: 'Image',       value: 'blog_image',  sortable: false },
-  { title: 'Title',       value: 'blog_name' },
-  { title: 'Description', value: 'blog_description', sortable: false },
+  { title: 'ID',          value: 'id',               width: 60 },
+  { title: 'Image',       value: 'blog_image',        sortable: false },
+  { title: 'Title',       value: 'blog_name' },       
+  { title: 'Description', value: 'blog_description',  sortable: false }, 
   { title: 'Created',     value: 'created_at' },
-  { title: 'Actions',     value: 'actions',     sortable: false },
+  { title: 'Actions',     value: 'actions',            sortable: false },
 ];
 
 const isAdmin = computed(() =>
@@ -718,28 +726,38 @@ const loadBlogs = async () => {
   }
 };
 
-const openBlogDialog = (blog = null) => {
+const openBlogDialog = async (blog = null) => {
+  // Reset first so the dialog always starts clean
+  Object.assign(blogForm.value, { blog_name: '', blog_description: '', blog_image: null });
+
   if (blog) {
     blogIsEditing.value    = true;
     editingBlogId.value    = blog.id;
     blogCurrentImage.value = blog.blog_image;
-    blogForm.value = {
-      blog_name:        blog.name,
-      blog_description: blog.description,
+    // Mutate in-place so Vue's reactivity keeps the field bindings intact
+    Object.assign(blogForm.value, {
+      blog_name:        blog.blog_name        ?? '',
+      blog_description: blog.blog_description ?? '',
       blog_image:       null,
-    };
+    });
   } else {
     blogIsEditing.value    = false;
     editingBlogId.value    = null;
     blogCurrentImage.value = null;
-    blogForm.value         = { blog_name: '', blog_description: '', blog_image: null };
   }
+
+  // Wait one tick so the form is fully populated before the dialog mounts
+  await nextTick();
   blogDialog.value = true;
 };
 
 const closeBlogDialog = () => {
   blogDialog.value = false;
-  blogForm.value   = { blog_name: '', blog_description: '', blog_image: null };
+  // Mutate in-place on close too, keeping the ref stable
+  Object.assign(blogForm.value, { blog_name: '', blog_description: '', blog_image: null });
+  blogIsEditing.value    = false;
+  editingBlogId.value    = null;
+  blogCurrentImage.value = null;
 };
 
 const saveBlog = async () => {

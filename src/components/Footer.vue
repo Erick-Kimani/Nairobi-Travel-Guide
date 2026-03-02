@@ -39,7 +39,7 @@ const handleLogout = async () => {
           
         </div> -->
       <br>
-        <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/contactus" />
+        <!-- <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/contactus" /> -->
       </div>
 
       <div class="footer-section links">
@@ -47,19 +47,18 @@ const handleLogout = async () => {
         <ul>
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/choice">Explore Hotels</router-link></li>
-          <li><router-link to="/aboutus">About Us</router-link></li>
           <li><router-link to="/contactus">Contact Us</router-link></li>
-          <li><router-link to="/blog">Blog</router-link></li>
-                
+          
+          
         </ul>
       </div>
 
       <div class="footer-section links">
         <h3>Support</h3>
         <ul>
-          <li><a href="#">FAQs</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
+          <li><router-link to="/blog">Blog</router-link></li>
+          <li><router-link to="/explore">Explore</router-link></li>
+                
          
         </ul>
       </div>

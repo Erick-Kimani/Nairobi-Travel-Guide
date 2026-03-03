@@ -6,7 +6,7 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title class="font-weight-bold">Admin Dashboard</v-toolbar-title>
       <v-spacer />
-      <v-btn icon="mdi-bell-outline" class="mr-2" />
+      <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/specialregistration" />
       <v-avatar color="secondary" size="35" class="mr-4">
         {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'AD' }}
       </v-avatar>

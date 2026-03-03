@@ -4,7 +4,7 @@
 
       <!-- Brand -->
       <router-link to="/" class="nav-brand">
-        <span class="logo-text luxury-title">Luxe Stays</span>
+        <span class="logo-text luxury-title">Nairobi Travel Guide</span>
       </router-link>
 
       <!-- Navigation -->

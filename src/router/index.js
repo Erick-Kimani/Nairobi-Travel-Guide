@@ -23,10 +23,10 @@ import SpecialRegistration from "@/views/SpecialRegistration.vue"
 import Blog from "@/components/Blog.vue"
 
 // Services
-import api from "@/services/api"
+//import api from "@/services/api"
 import TokenService from "@/services/TokenService"
 import AuthService from "@/services/authService"
-import path from "path"
+//import path from "path"
 
 const routes = [
   /* =========================
@@ -46,8 +46,11 @@ const routes = [
     name: "specialregistration",
     component: SpecialRegistration,
     meta: {
-      guestOnly: true,
-      hideLayout: true // 🚫 Hide Navbar & Footer
+      //guestOnly: true,
+      hideLayout: false,
+      requiresAuth: true,
+      ability: "admin",
+      // 🚫 Hide Navbar & Footer
     }
   },
 

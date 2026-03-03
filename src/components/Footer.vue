@@ -26,7 +26,7 @@ const handleLogout = async () => {
   <footer class="app-footer">
     <div class="footer-container">
       <div class="footer-section brand-info">
-        <h2 class="footer-logo">LUXE<span>STAYS</span></h2>
+        <h2 class="footer-logo">EXPLORE<span>NAIROBI</span></h2>
         <p>
           Redefining luxury travel with curated experiences in the world's 
           most breathtaking locations. Your comfort is our heritage.
@@ -105,7 +105,7 @@ const handleLogout = async () => {
 
 .footer-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: #ffffff;
   margin-bottom: 20px;
   letter-spacing: 2px;

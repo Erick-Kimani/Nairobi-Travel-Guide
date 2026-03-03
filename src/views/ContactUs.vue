@@ -105,11 +105,11 @@
               <div class="mt-10 pt-6 contact-footer">
                 <div class="footer-item">
                   <v-icon size="14" color="amber-lighten-2">mdi-phone</v-icon>
-                  <span>+254 700 000 000</span>
+                  <span>+254 91018109</span>
                 </div>
                 <div class="footer-item mt-1">
                   <v-icon size="14" color="amber-lighten-2">mdi-email</v-icon>
-                  <span>concierge@luxelodging.com</span>
+                  <span>harrymephis@gmail.com</span>
                 </div>
               </div>
             </div>

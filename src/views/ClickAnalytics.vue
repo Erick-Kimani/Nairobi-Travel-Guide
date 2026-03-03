@@ -6,8 +6,9 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title class="font-weight-bold">Analytics Dashboard</v-toolbar-title>
       <v-spacer />
-      <v-btn icon="mdi-bell-outline" class="mr-2" />
-      <v-avatar color="secondary" size="35" class="mr-4">
+      <h4> ( Your Profile )</h4>
+      
+      <v-avatar color="secondary" size="35" class="mr-7">
         {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'U' }}
       </v-avatar>
     </v-app-bar>

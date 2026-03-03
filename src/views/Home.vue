@@ -49,10 +49,10 @@ const backgroundStyle = computed(() => ({
 
       <div class="hero-actions">
         <router-link to="/choice" class="btn-primary">Explore</router-link>
-        <router-link to="/vacation" class="btn-secondary">Vacation Hotel</router-link>
-        <router-link to="/transit" class="btn-secondary">Transit Lodges</router-link>
-        <router-link to="/safari" class="btn-secondary">Tours & Safaris</router-link>
+        <router-link to="/vacation" class="btn-secondary">Vacation Hotels</router-link>
+        <router-link to="/transit" class="btn-secondary">Transit Hotels</router-link>
         <router-link to="/airport" class="btn-secondary">Airport Transfers</router-link>
+        <router-link to="/safari" class="btn-secondary">Tours & Safaris</router-link>
       </div>
     </div>
   </section>

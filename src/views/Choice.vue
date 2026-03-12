@@ -38,8 +38,8 @@ const choices = ref([
 <template>
   <div class="choice-container">
     <header class="header">
-      <h1>Select a Category</h1>
-      <p>Choose the type of accommodation or space you are looking for.</p>
+      <h1>Plan Your Perfect Journey</h1>
+<p>Your Journey Begins Here — Stays, Transfers & Adventures, All in One Place.</p>
     </header>
 
     <div class="card-grid">

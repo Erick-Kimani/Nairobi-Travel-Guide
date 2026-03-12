@@ -193,7 +193,7 @@
                       <div v-if="msg.reply" class="reply-section mt-4 pa-3">
                         <div class="d-flex align-center mb-2">
                           <v-icon size="18" color="amber-lighten-2" class="mr-2">mdi-reply</v-icon>
-                          <p class="reply-label">Concierge Reply:</p>
+                          <p class="reply-label"> Reply:</p>
                         </div>
                         <p class="reply-text">{{ msg.reply }}</p>
                         <p class="reply-date mt-2">
@@ -206,7 +206,7 @@
                       <div v-else class="no-reply-section mt-4 pa-3">
                         <p class="no-reply-text">
                           <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
-                          Awaiting reply from our concierge team...
+                          Awaiting reply from our team...
                         </p>
                       </div>
                     </div>

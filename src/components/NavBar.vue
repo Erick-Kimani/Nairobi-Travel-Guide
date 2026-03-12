@@ -123,7 +123,7 @@
       <!-- CTA -->
       <div class="nav-actions" v-if="!isLoggedIn && !isAuthPage">
         <router-link to="/login" class="btn-outline">
-          Get Started
+        Sign In
         </router-link>
       </div>
 

@@ -7,11 +7,10 @@ export const useServiceStore = defineStore("Service", () => {
   const headers = [
     { title: "ID", key: "id", align: "start" },
     { title: "Name", key: "name" },
-    { title: "Price", key: "price" },
     { title: "Description", key: "description" },
-    { title: "Service Code", key: "service_code" },
     { title: "Website URL", key: "website_url" },
-    { title: "Service Image", key: "service_image" },
+    { title: "Category ID", key: "category_id"},
+    { title: "Service Image", key: "service_image_1" },
     { title: "Actions", key: "actions", align: "end", sortable: false },
   ];
 
@@ -25,11 +24,10 @@ export const useServiceStore = defineStore("Service", () => {
     return {
       id: null,
       name: "",
-      price: "",
       description: "",
-      service_code: "",
       website_url: "",
-      service_image: null,
+      category_id: "",
+      service_image_1: null,
     };
   }
 
@@ -98,11 +96,10 @@ export const useServiceStore = defineStore("Service", () => {
     formModel.value = {
       id: found.id,
       name: found.name,
-      price: found.price,
       description: found.description,
-      service_code: found.service_code,
       website_url: found.website_url,
-      service_image: null,
+      category_id: found.category_id,
+      service_image_1: null,
     };
 
     dialog.value = true;

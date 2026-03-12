@@ -327,7 +327,11 @@ const formatDate = (dateString) => {
 const fetchUserProfile = async () => {
   try {
     const res = await api.get("/me");
-    userProfile.value = res.data;
+    // /me returns { user: { id, name, email, role_id, ... }, abilities: { admin: true, ... } }
+    userProfile.value = {
+      ...res.data.user,
+      abilities: res.data.abilities ? Object.keys(res.data.abilities).filter(k => res.data.abilities[k]) : [],
+    };
   } catch (err) {
     console.error("Failed to load user profile", err);
   }

@@ -20,10 +20,9 @@
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props" prepend-icon="mdi-table-multiple" title="Category Tables" rounded="lg" />
           </template>
+                    <v-list-item prepend-icon="mdi-room-service" title="Services" :active="currentView === 'services'" @click="currentView = 'services'" rounded="lg" class="pl-8" />
           <v-list-item prepend-icon="mdi-palm-tree" title="Vacations" :active="currentView === 'vacations'" @click="currentView = 'vacations'" rounded="lg" class="pl-8" />
-          <v-list-item prepend-icon="mdi-bus" title="Transit" :active="currentView === 'transit'" @click="currentView = 'transit'" rounded="lg" class="pl-8" />
-          <v-list-item prepend-icon="mdi-account-group" title="Meeting" :active="currentView === 'meeting'" @click="currentView = 'meeting'" rounded="lg" class="pl-8" />
-          <v-list-item prepend-icon="mdi-room-service" title="Services" :active="currentView === 'services'" @click="currentView = 'services'" rounded="lg" class="pl-8" />
+
         </v-list-group>
 
         <v-list-item prepend-icon="mdi-account-multiple" title="User Profiles" :active="currentView === 'userProfiles'" @click="currentView = 'userProfiles'" rounded="lg" />
@@ -113,57 +112,6 @@
             </v-data-table>
           </v-card>
 
-          <!-- Transit Table -->
-          <v-card v-else-if="currentView === 'transit'" elevation="2" border>
-            <v-data-table :headers="TransitStore.headers" :items="TransitStore.Transits || []" :hide-default-footer="(TransitStore.Transits || []).length < 11" hover>
-              <template v-slot:top>
-                <v-toolbar flat color="white">
-                  <v-toolbar-title class="text-h6 font-weight-medium">Transit Management</v-toolbar-title>
-                  <v-spacer />
-                  <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="TransitStore.add()">Add Transit</v-btn>
-                </v-toolbar>
-                <v-divider />
-              </template>
-              <template v-slot:item.transit_image="{ item }">
-                <v-avatar size="190" rounded="lg" class="my-2 border">
-                  <v-img v-if="item.transit_image" :src="`http://127.0.0.1:8000/storage/${item.transit_image}`" cover />
-                  <v-icon v-else color="grey-lighten-2">mdi-image-outline</v-icon>
-                </v-avatar>
-              </template>
-              <template v-slot:item.actions="{ item }">
-                <div class="d-flex ga-1">
-                  <v-btn icon="mdi-pencil" variant="text" color="blue" size="small" @click="TransitStore.edit(item.id)" />
-                  <v-btn icon="mdi-delete" variant="text" color="red" size="small" @click="TransitStore.remove(item.id)" />
-                </div>
-              </template>
-            </v-data-table>
-          </v-card>
-
-          <!-- Meeting Table -->
-          <v-card v-else-if="currentView === 'meeting'" elevation="2" border>
-            <v-data-table :headers="MeetingStore.headers" :items="MeetingStore.Meetings || []" :hide-default-footer="(MeetingStore.Meetings || []).length < 11" hover>
-              <template v-slot:top>
-                <v-toolbar flat color="white">
-                  <v-toolbar-title class="text-h6 font-weight-medium">Meeting Management</v-toolbar-title>
-                  <v-spacer />
-                  <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="MeetingStore.add()">Add Meeting</v-btn>
-                </v-toolbar>
-                <v-divider />
-              </template>
-              <template v-slot:item.meeting_image="{ item }">
-                <v-avatar size="190" rounded="lg" class="my-2 border">
-                  <v-img v-if="item.meeting_image" :src="`http://127.0.0.1:8000/storage/${item.meeting_image}`" cover />
-                  <v-icon v-else color="grey-lighten-2">mdi-image-outline</v-icon>
-                </v-avatar>
-              </template>
-              <template v-slot:item.actions="{ item }">
-                <div class="d-flex ga-1">
-                  <v-btn icon="mdi-pencil" variant="text" color="blue" size="small" @click="MeetingStore.edit(item.id)" />
-                  <v-btn icon="mdi-delete" variant="text" color="red" size="small" @click="MeetingStore.remove(item.id)" />
-                </div>
-              </template>
-            </v-data-table>
-          </v-card>
 
           <!-- Services Table -->
           <v-card v-else-if="currentView === 'services'" elevation="2" border>
@@ -404,47 +352,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="TransitStore.dialog" max-width="600" persistent>
-      <v-card rounded="xl">
-        <v-card-title class="pa-6 text-h5">{{ TransitStore.isEditing ? 'Update' : 'Create' }} Transit</v-card-title>
-        <v-divider />
-        <v-card-text class="pa-6">
-          <v-row>
-            <v-col cols="12"><v-text-field v-model="TransitStore.formModel.name" label="Transit Name" variant="outlined" /></v-col>
-            <v-col cols="6"><v-text-field v-model="TransitStore.formModel.price" label="Price ($)" type="number" variant="outlined" /></v-col>
-            <v-col cols="6"><v-text-field v-model="TransitStore.formModel.transit_code" label="Code" variant="outlined" /></v-col>
-            <v-col cols="12"><v-textarea v-model="TransitStore.formModel.description" label="Description" variant="outlined" /></v-col>
-            <v-col cols="12"><v-textarea v-model="TransitStore.formModel.website_url" label="Website URL" variant="outlined" /></v-col>
-            <v-col cols="12"><v-file-input v-model="TransitStore.formModel.transit_image" label="Upload Image" variant="outlined" prepend-inner-icon="mdi-camera" /></v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions class="pa-6">
-          <v-spacer /><v-btn variant="text" @click="TransitStore.dialog = false">Cancel</v-btn>
-          <v-btn color="primary" variant="elevated" width="190" @click="TransitStore.save()">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
-    <v-dialog v-model="MeetingStore.dialog" max-width="600" persistent>
-      <v-card rounded="xl">
-        <v-card-title class="pa-6 text-h5">{{ MeetingStore.isEditing ? 'Update' : 'Create' }} Meeting</v-card-title>
-        <v-divider />
-        <v-card-text class="pa-6">
-          <v-row>
-            <v-col cols="12"><v-text-field v-model="MeetingStore.formModel.name" label="Meeting Name" variant="outlined" /></v-col>
-            <v-col cols="6"><v-text-field v-model="MeetingStore.formModel.price" label="Price ($)" type="number" variant="outlined" /></v-col>
-            <v-col cols="6"><v-text-field v-model="MeetingStore.formModel.meeting_code" label="Code" variant="outlined" /></v-col>
-            <v-col cols="12"><v-textarea v-model="MeetingStore.formModel.description" label="Description" variant="outlined" /></v-col>
-            <v-col cols="12"><v-textarea v-model="TransitStore.formModel.website_url" label="Website URL" variant="outlined" /></v-col>
-            <v-col cols="12"><v-file-input v-model="MeetingStore.formModel.meeting_image" label="Upload Image" variant="outlined" prepend-inner-icon="mdi-camera" /></v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions class="pa-6">
-          <v-spacer /><v-btn variant="text" @click="MeetingStore.dialog = false">Cancel</v-btn>
-          <v-btn color="primary" variant="elevated" width="190" @click="MeetingStore.save()">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
     <v-dialog v-model="ServiceStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
@@ -453,11 +361,10 @@
         <v-card-text class="pa-6">
           <v-row>
             <v-col cols="12"><v-text-field v-model="ServiceStore.formModel.name" label="Service Name" variant="outlined" /></v-col>
-            <v-col cols="6"><v-text-field v-model="ServiceStore.formModel.price" label="Price ($)" type="number" variant="outlined" /></v-col>
-            <v-col cols="6"><v-text-field v-model="ServiceStore.formModel.service_code" label="Code" variant="outlined" /></v-col>
             <v-col cols="12"><v-textarea v-model="ServiceStore.formModel.description" label="Description" variant="outlined" /></v-col>
             <v-col cols="12"><v-textarea v-model="ServiceStore.formModel.website_url" label="Website URL" variant="outlined" /></v-col>
-            <v-col cols="12"><v-file-input v-model="ServiceStore.formModel.service_image" label="Upload Image" variant="outlined" prepend-inner-icon="mdi-camera" /></v-col>
+            <v-col cols="12"><v-text-field v-model="ServiceStore.formModel.category_id" label="Category ID" variant="outlined" /></v-col>
+            <v-col cols="12"><v-file-input v-model="ServiceStore.formModel.service_image_1" label="Upload Image" variant="outlined" prepend-inner-icon="mdi-camera" /></v-col>
           </v-row>
         </v-card-text>
         <v-card-actions class="pa-6">
@@ -589,13 +496,9 @@
 import { ref, onMounted, computed, nextTick } from "vue";
 import api from "@/services/api";
 import { useVacationStore } from "@/stores/vacation";
-import { useTransitStore } from "@/stores/transit";
-import { useMeetingStore } from "@/stores/meeting";
 import { useServiceStore } from "@/stores/service";
 
 const VacationStore = useVacationStore();
-const TransitStore  = useTransitStore();
-const MeetingStore  = useMeetingStore();
 const ServiceStore  = useServiceStore();
 
 const drawer      = ref(true);
@@ -645,12 +548,14 @@ const blogHeaders = [
   { title: 'Image',       value: 'blog_image',        sortable: false },
   { title: 'Title',       value: 'blog_name' },       
   { title: 'Description', value: 'blog_description',  sortable: false }, 
-  { title: 'Created',     value: 'created_at' },
+  // { title: 'Created',     value: 'created_at' },
   { title: 'Actions',     value: 'actions',            sortable: false },
 ];
 
+// userProfile now has the user fields at the top level (id, name, email, role, role_id)
+// role is a nested object: { id, name, slug } — check slug for 'admin'
 const isAdmin = computed(() =>
-  userProfile.value?.role_id === 1 || userProfile.value?.role_name === 'admin'
+  userProfile.value?.role?.slug === 'admin' || userProfile.value?.role_id === 1
 );
 
 const userHeaders = [
@@ -902,15 +807,28 @@ const publishService = async () => {
   finally { addingService.value = false; }
 };
 
-// ─── Admin profile (unchanged) ────────────────────────────────────
+// ─── Admin profile ────────────────────────────────────────────────
+// /me returns { user: { id, name, email, role_id, ... }, abilities: { admin: true, ... } }
+// We merge abilities into userProfile so the template can read userProfile.abilities
 const fetchAdminProfile = async () => {
-  try { const res = await api.get("/me"); userProfile.value = res.data; }
-  catch (err) { console.error("Failed to load admin profile info", err); }
+  try {
+    const res = await api.get("/me");
+    userProfile.value = {
+      ...res.data.user,
+      abilities: res.data.abilities ? Object.keys(res.data.abilities).filter(k => res.data.abilities[k]) : [],
+    };
+  } catch (err) {
+    console.error("Failed to load admin profile info", err);
+  }
 };
 
 const fetchUsers = async () => {
   loadingUsers.value = true;
-  try { const res = await api.get("/users"); users.value = res.data.user; }
+  try {
+    const res = await api.get("/users");
+    // Backend returns { users: [...] } or { user: [...] } — handle both
+    users.value = res.data.users ?? res.data.user ?? [];
+  }
   catch (err) { console.error("Failed to load users", err); }
   finally { loadingUsers.value = false; }
 };
@@ -919,11 +837,18 @@ const loadContacts = async () => {
   currentView.value     = 'contacts';
   loadingContacts.value = true;
   try {
-    const endpoint = isAdmin.value ? '/contactuses' : '/my-contacts';
+    // Admin endpoint returns all messages with replies
+    // isAdmin is now reliably set since fetchAdminProfile runs before loadContacts
+    const endpoint = isAdmin.value ? '/contactuses/admin/messages' : '/contactuses';
     const res = await api.get(endpoint);
-    contacts.value = res.data.Contactus || [];
-  } catch (err) { console.error('Failed to load contacts', err); contacts.value = []; }
-  finally { loadingContacts.value = false; }
+    // Backend returns { Contactus: [...] } or array directly
+    contacts.value = res.data.Contactus ?? res.data.contactus ?? res.data ?? [];
+  } catch (err) {
+    console.error('Failed to load contacts', err);
+    contacts.value = [];
+  } finally {
+    loadingContacts.value = false;
+  }
 };
 
 const deleteContact = async (id) => {
@@ -971,10 +896,21 @@ const formatDate = (dateString) => {
 
 onMounted(async () => {
   try {
+    // fetchAdminProfile MUST complete first — isAdmin, loadContacts, and
+    // fetchUsers all depend on userProfile being populated correctly.
     await fetchAdminProfile();
-    if (isAdmin.value) { await fetchUsers(); await fetchClicks(); await loadManagerApprovals(); }
+
+    // Now isAdmin is reliable — run all data fetches in parallel
+    await Promise.all([
+      fetchUsers(),
+      fetchClicks(),
+      loadManagerApprovals(),
+      VacationStore.getVacations(),
+      ServiceStore.getServices(),
+    ]);
+
+    // loadContacts sets currentView — run after parallel fetches
     await loadContacts();
-    await Promise.all([VacationStore.getVacations(), TransitStore.getTransits(), MeetingStore.getMeetings(), ServiceStore.getServices()]);
   } catch (error) {
     console.error("Error loading dashboard data:", error);
   }

@@ -34,6 +34,7 @@ import VacationDetails     from '@/views/VacationDetails.vue';
 import SpecialRegistration from '@/views/SpecialRegistration.vue';
 import AuthCallback        from '@/views/AuthCallback.vue';
 import Blog                from '@/components/Blog.vue';
+import FAQ                 from '@/views/FAQ.vue';
 
 import AuthService  from '@/services/authService';
 import TokenService from '@/services/TokenService';
@@ -67,6 +68,7 @@ const routes = [
   { path: '/safaridetails',   name: 'safaridetails',     component: SafariDetails,        meta: { requiresAuth: false } },
   { path: '/airport',         name: 'airport',           component: Airport,              meta: { requiresAuth: false } },
   { path: '/airportdetails',  name: 'airportdetails',    component: AirportDetails,       meta: { requiresAuth: false } },
+  { path: '/faq',             name: 'faq',               component: FAQ,                  meta: { requiresAuth: false } },
 
   /* ══════════════════════════════════════════════════════
      PROTECTED PAGES — requiresAuth: true

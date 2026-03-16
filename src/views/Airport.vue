@@ -35,14 +35,14 @@ function viewDetails(transfer) {
         <img src="/images/Air port transfer 2.png" alt="Header Image" class="hero-image" />
         <div class="hero-overlay">
           <h1 class="text-center text-3xl font-bold text-primary title-glow">
-            Airport Transfers
+           Nairobi airport transfer
           </h1>
         </div>
       </div>
     </div>
 
     <v-container class="py-10 content-body" fluid>
-      <div class="search-wrapper mb-10 px-4">
+      <div class="search-wrapper mb-6 px-4">
         <v-text-field
           v-model="searchQuery"
           label="Search for Airport Transfers services..."
@@ -51,6 +51,18 @@ function viewDetails(transfer) {
           clearable
           class="search-field"
         />
+      </div>
+
+      <!-- SEO Description Block -->
+      <div class="seo-description px-4 mb-10">
+        <p>
+          Our Nairobi airport transfer services offer reliable and comfortable rides to and from
+          <strong>Jomo Kenyatta International Airport (JKIA)</strong> and
+          <strong>Wilson Airport</strong>. Whether you are arriving for a safari, business trip,
+          or holiday, our professional drivers ensure a smooth, punctual, and stress-free journey.
+          We serve hotels, residences, and destinations across <strong>Nairobi</strong> and
+          beyond — with vehicles suited for solo travelers, families, and corporate groups alike.
+        </p>
       </div>
 
       <div v-if="store.loading" class="text-center py-10">
@@ -112,6 +124,23 @@ function viewDetails(transfer) {
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)); display: flex; align-items: center; justify-content: center; }
 .content-body { position: relative; z-index: 2; background-color: #000; }
 .search-field { max-width: 350px; background: rgba(255,255,255,0.05); border-radius: 8px; }
+
+/* SEO Description */
+.seo-description {
+  max-width: 860px;
+  border-left: 3px solid #ff9800;
+  padding-left: 16px;
+}
+.seo-description p {
+  font-size: 0.97rem;
+  color: #c8c8c8;
+  line-height: 1.75;
+}
+.seo-description strong {
+  color: #ff9800;
+  font-weight: 600;
+}
+
 .card-border-wrapper { position: relative; padding: 8px; border-radius: 68px; overflow: hidden; height: 100%; display: flex; transition: transform 0.3s ease; }
 .card-border-wrapper::before { content: ""; position: absolute; inset: 0; background-image: url('/images/Picture 5 .jpg'); background-size: cover; background-position: center; border-radius: 68px; z-index: 0; }
 .card-border-wrapper:hover { transform: translateY(-10px); }
@@ -123,3 +152,4 @@ function viewDetails(transfer) {
 .description { font-size: 0.95rem; color: #e0e0e0; }
 .text-primary { color: #ffd700 !important; font-size: 3.5rem !important; }
 </style>
+C:\Users\user\Downloads\coconut-tree-svgrepo-com.svg

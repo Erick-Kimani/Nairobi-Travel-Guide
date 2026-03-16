@@ -6,7 +6,7 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title class="font-weight-bold">Admin Dashboard</v-toolbar-title>
       <v-spacer />
-      <v-btn icon="mdi-bell-outline" class="mr-2"  router-link to="/specialregistration" />
+      <v-btn icon="mdi-bell-outline" class="mr-2" router-link to="/specialregistration" />
       <v-avatar color="secondary" size="35" class="mr-4">
         {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'AD' }}
       </v-avatar>
@@ -20,9 +20,8 @@
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props" prepend-icon="mdi-table-multiple" title="Category Tables" rounded="lg" />
           </template>
-                    <v-list-item prepend-icon="mdi-room-service" title="Services" :active="currentView === 'services'" @click="currentView = 'services'" rounded="lg" class="pl-8" />
+          <v-list-item prepend-icon="mdi-room-service" title="Services" :active="currentView === 'services'" @click="currentView = 'services'" rounded="lg" class="pl-8" />
           <v-list-item prepend-icon="mdi-palm-tree" title="Vacations" :active="currentView === 'vacations'" @click="currentView = 'vacations'" rounded="lg" class="pl-8" />
-
         </v-list-group>
 
         <v-list-item prepend-icon="mdi-account-multiple" title="User Profiles" :active="currentView === 'userProfiles'" @click="currentView = 'userProfiles'" rounded="lg" />
@@ -30,15 +29,8 @@
         <v-list-item prepend-icon="mdi-cursor-default-click" title="Click Monitoring" :active="currentView === 'clicks'" @click="currentView = 'clicks'" rounded="lg" />
         <v-list-item prepend-icon="mdi-clipboard-check" title="Manager Approval" :active="currentView === 'approvals'" @click="loadManagerApprovals(); currentView = 'approvals'" rounded="lg" />
         <v-list-item prepend-icon="mdi-plus-circle-outline" title="Published Service" :active="currentView === 'publishService'" @click="openPublishView" rounded="lg" />
-
-        <!-- ✦ NEW Blog nav item -->
-        <v-list-item
-          prepend-icon="mdi-post-outline"
-          title="Blog Management"
-          :active="currentView === 'blogs'"
-          @click="loadBlogs(); currentView = 'blogs'"
-          rounded="lg"
-        />
+        <v-list-item prepend-icon="mdi-post-outline" title="Blog Management" :active="currentView === 'blogs'" @click="loadBlogs(); currentView = 'blogs'" rounded="lg" />
+        <v-list-item prepend-icon="mdi-frequently-asked-questions" title="FAQs Management" :active="currentView === 'faqs'" @click="loadFaqs(); currentView = 'faqs'" rounded="lg" />
       </v-list>
 
       <template v-slot:append>
@@ -71,7 +63,7 @@
               <tbody>
                 <tr><td><strong>Admin Name</strong></td><td>{{ userProfile?.name || 'Loading...' }}</td></tr>
                 <tr><td><strong>Email Address</strong></td><td>{{ userProfile?.email || 'Loading...' }}</td></tr>
-                <tr><td><strong>Role Id</strong></td><td>{{ userProfile?.role_id || 'Loading...' }}</td></tr>
+                <tr><td><strong>Role id</strong></td><td>{{ userProfile?.role_id || 'Loading...' }}</td></tr>
                 <tr><td><strong>Active/Inactive</strong></td><td>{{ userProfile?.is_active ? 'Active' : 'Inactive' }}</td></tr>
                 <tr>
                   <td><strong>Permissions/Abilities</strong></td>
@@ -111,7 +103,6 @@
               </template>
             </v-data-table>
           </v-card>
-
 
           <!-- Services Table -->
           <v-card v-else-if="currentView === 'services'" elevation="2" border>
@@ -281,39 +272,26 @@
             </v-card-actions>
           </v-card>
 
-          <!-- ═══════════════════════════════════════
-               ✦ NEW: Blog Management
-               ═══════════════════════════════════════ -->
+          <!-- Blog Management -->
           <v-card v-else-if="currentView === 'blogs'" elevation="2" border>
-            <v-data-table
-              :headers="blogHeaders"
-              :items="blogs"
-              :loading="loadingBlogs"
-              :hide-default-footer="blogs.length < 11"
-              hover
-            >
+            <v-data-table :headers="blogHeaders" :items="blogs" :loading="loadingBlogs" :hide-default-footer="blogs.length < 11" hover>
               <template v-slot:top>
                 <v-toolbar flat color="white">
                   <v-toolbar-title class="text-h6 font-weight-medium">Blog Management</v-toolbar-title>
                   <v-spacer />
-                  <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="openBlogDialog()">
-                    Add Blog Post
-                  </v-btn>
+                  <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="openBlogDialog()">Add Blog Post</v-btn>
                 </v-toolbar>
                 <v-divider />
               </template>
-
               <template v-slot:item.blog_image="{ item }">
                 <v-avatar size="100" rounded="lg" class="my-2 border">
                   <v-img v-if="item.blog_image" :src="`http://127.0.0.1:8000/storage/${item.blog_image}`" cover />
                   <v-icon v-else color="grey-lighten-2">mdi-image-outline</v-icon>
                 </v-avatar>
               </template>
-
               <template v-slot:item.description="{ item }">
                 <span>{{ item.description?.length > 80 ? item.description.substring(0, 80) + '…' : item.description }}</span>
               </template>
-
               <template v-slot:item.actions="{ item }">
                 <div class="d-flex ga-1">
                   <v-btn icon="mdi-pencil" variant="text" color="blue" size="small" @click="openBlogDialog(item)" />
@@ -323,14 +301,54 @@
             </v-data-table>
           </v-card>
 
+          <!-- FAQ Management -->
+          <v-card v-else-if="currentView === 'faqs'" elevation="2" border>
+            <v-data-table
+              :headers="faqHeaders"
+              :items="faqs"
+              :loading="loadingFaqs"
+              :hide-default-footer="faqs.length < 11"
+              hover
+            >
+              <template v-slot:top>
+                <v-toolbar flat color="white">
+                  <v-toolbar-title class="text-h6 font-weight-medium">FAQs Management</v-toolbar-title>
+                  <v-spacer />
+                  <!-- ✅ Refresh button so admin can manually re-sync -->
+                  <v-btn icon="mdi-refresh" class="mr-2" @click="loadFaqs" :loading="loadingFaqs" />
+                  <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="openFaqDialog()">
+                    Add FAQ
+                  </v-btn>
+                </v-toolbar>
+                <v-divider />
+              </template>
+
+              <template v-slot:item.query="{ item }">
+                <span class="font-weight-medium">
+                  {{ item.query?.length > 80 ? item.query.substring(0, 80) + '…' : item.query }}
+                </span>
+              </template>
+
+              <template v-slot:item.answer="{ item }">
+                <span class="text-grey">
+                  {{ item.answer?.length > 100 ? item.answer.substring(0, 100) + '…' : item.answer }}
+                </span>
+              </template>
+
+              <template v-slot:item.actions="{ item }">
+                <div class="d-flex ga-1">
+                  <v-btn icon="mdi-pencil" variant="text" color="blue" size="small" @click="openFaqDialog(item)" />
+                  <v-btn icon="mdi-delete" variant="text" color="red" size="small" @click="deleteFaq(item.id)" />
+                </div>
+              </template>
+            </v-data-table>
+          </v-card>
+
         </v-fade-transition>
       </v-container>
     </v-main>
 
-    <!-- ══════════════════════════════════
-         Existing Dialogs (all unchanged)
-         ══════════════════════════════════ -->
-
+    <!-- Vacation Dialog -->
     <v-dialog v-model="VacationStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">{{ VacationStore.isEditing ? 'Update' : 'Create' }} Vacation</v-card-title>
@@ -352,8 +370,7 @@
       </v-card>
     </v-dialog>
 
-
-
+    <!-- Service Dialog -->
     <v-dialog v-model="ServiceStore.dialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">{{ ServiceStore.isEditing ? 'Update' : 'Create' }} Service</v-card-title>
@@ -374,6 +391,7 @@
       </v-card>
     </v-dialog>
 
+    <!-- View Contact Dialog -->
     <v-dialog v-model="viewDialog" max-width="700" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5 d-flex align-center"><v-icon class="mr-2">mdi-email-outline</v-icon>Contact Message Details</v-card-title>
@@ -401,6 +419,7 @@
       </v-card>
     </v-dialog>
 
+    <!-- Reply Dialog -->
     <v-dialog v-model="replyDialog" max-width="600" persistent>
       <v-card rounded="xl">
         <v-card-title class="pa-6 text-h5">{{ selectedContact?.reply ? 'Update Reply' : 'Send Reply' }}</v-card-title>
@@ -420,56 +439,27 @@
       </v-card>
     </v-dialog>
 
-    <!-- ✦ NEW: Blog Create / Edit Dialog -->
+    <!-- Blog Dialog -->
     <v-dialog v-model="blogDialog" max-width="620" persistent>
       <v-card rounded="xl">
-        <v-card-title class="pa-6 text-h5">
-          {{ blogIsEditing ? 'Update Blog Post' : 'Create Blog Post' }}
-        </v-card-title>
+        <v-card-title class="pa-6 text-h5">{{ blogIsEditing ? 'Update Blog Post' : 'Create Blog Post' }}</v-card-title>
         <v-divider />
         <v-card-text class="pa-6">
           <v-row>
-            <!-- Blog Name: required, min 4 chars (mirrors controller validation) -->
             <v-col cols="12">
-              <v-text-field
-                v-model="blogForm.blog_name"
-                label="Blog Title / Name"
-                variant="outlined"
-                :rules="[v => !!v || 'Title is required', v => (v && v.length >= 4) || 'Minimum 4 characters']"
-                counter="80"
-              />
+              <v-text-field v-model="blogForm.blog_name" label="Blog Title / Name" variant="outlined"
+                :rules="[v => !!v || 'Title is required', v => (v && v.length >= 4) || 'Minimum 4 characters']" counter="80" />
             </v-col>
-
-            <!-- Blog Description: required, max 2000 chars -->
             <v-col cols="12">
-              <v-textarea
-                v-model="blogForm.blog_description"
-                label="Blog Description"
-                variant="outlined"
-                rows="5"
-                auto-grow
+              <v-textarea v-model="blogForm.blog_description" label="Blog Description" variant="outlined" rows="5" auto-grow
                 :rules="[v => !!v || 'Description is required', v => !v || v.length <= 2000 || 'Maximum 2000 characters']"
-                counter="2000"
-                hint="Describe the blog post content (max 2000 characters)"
-                persistent-hint
-              />
+                counter="2000" hint="Describe the blog post content (max 2000 characters)" persistent-hint />
             </v-col>
-
-            <!-- Blog Image: optional, jpg/jpeg/png -->
             <v-col cols="12">
-              <v-file-input
-                v-model="blogForm.blog_image"
-                label="Upload Blog Image (optional)"
-                variant="outlined"
-                prepend-inner-icon="mdi-image-outline"
-                accept="image/jpg,image/jpeg,image/png"
-                hint="Accepted: JPG, JPEG, PNG"
-                persistent-hint
-                clearable
-              />
+              <v-file-input v-model="blogForm.blog_image" label="Upload Blog Image (optional)" variant="outlined"
+                prepend-inner-icon="mdi-image-outline" accept="image/jpg,image/jpeg,image/png"
+                hint="Accepted: JPG, JPEG, PNG" persistent-hint clearable />
             </v-col>
-
-            <!-- Show current image preview when editing -->
             <v-col v-if="blogIsEditing && blogCurrentImage && !blogForm.blog_image?.length" cols="12">
               <p class="text-caption text-grey mb-2">Current Image:</p>
               <v-avatar size="120" rounded="lg" class="border">
@@ -484,6 +474,63 @@
           <v-btn variant="text" @click="closeBlogDialog">Cancel</v-btn>
           <v-btn color="primary" variant="elevated" width="190" :loading="savingBlog" @click="saveBlog">
             {{ blogIsEditing ? 'Update Post' : 'Publish Post' }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- FAQ Dialog -->
+    <v-dialog v-model="faqDialog" max-width="620" persistent>
+      <v-card rounded="xl">
+        <v-card-title class="pa-6 text-h5 d-flex align-center ga-2">
+          <v-icon color="primary">mdi-frequently-asked-questions</v-icon>
+          {{ faqIsEditing ? 'Update FAQ' : 'Add New FAQ' }}
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-6">
+          <v-row>
+            <v-col cols="12">
+              <v-textarea
+                v-model="faqForm.query"
+                label="Question"
+                placeholder="e.g. What is the fastest way to get around Nairobi?"
+                variant="outlined"
+                prepend-inner-icon="mdi-help-circle-outline"
+                rows="3"
+                auto-grow
+                :rules="[v => !!v || 'Question is required', v => !v || v.length <= 2000 || 'Maximum 2000 characters']"
+                counter="2000"
+                hint="Enter the question users commonly ask"
+                persistent-hint
+              />
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="faqForm.answer"
+                label="Answer"
+                placeholder="Provide a clear and helpful answer..."
+                variant="outlined"
+                prepend-inner-icon="mdi-text-box-outline"
+                rows="5"
+                auto-grow
+                :rules="[v => !!v || 'Answer is required', v => !v || v.length <= 2000 || 'Maximum 2000 characters']"
+                counter="2000"
+                hint="Write a concise, helpful answer (max 2000 characters)"
+                persistent-hint
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-6">
+          <v-spacer />
+          <v-btn variant="text" @click="closeFaqDialog">Cancel</v-btn>
+          <v-btn
+            color="primary" variant="elevated" width="210"
+            :loading="savingFaq" prepend-icon="mdi-send"
+            @click="saveFaq"
+          >
+            {{ faqIsEditing ? 'Update FAQ' : 'Publish to FAQ Page' }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -528,7 +575,7 @@ const addingService    = ref(false);
 const selectedService  = ref(null);
 const publishSuccess   = ref('');
 
-// ─── Blog state (NEW) ─────────────────────────────────────────────
+// ─── Blog state ───────────────────────────────────────────────────
 const blogs            = ref([]);
 const loadingBlogs     = ref(false);
 const blogDialog       = ref(false);
@@ -543,17 +590,36 @@ const blogForm = ref({
   blog_image:       null,
 });
 
+// ─── FAQ state ────────────────────────────────────────────────────
+const faqs         = ref([]);
+const loadingFaqs  = ref(false);
+const faqDialog    = ref(false);
+const faqIsEditing = ref(false);
+const savingFaq    = ref(false);
+const editingFaqId = ref(null);
+
+const faqForm = ref({
+  query:  '',
+  answer: '',
+});
+
+// ─── Table Headers ────────────────────────────────────────────────
+
 const blogHeaders = [
   { title: 'ID',          value: 'id',               width: 60 },
   { title: 'Image',       value: 'blog_image',        sortable: false },
-  { title: 'Title',       value: 'blog_name' },       
-  { title: 'Description', value: 'blog_description',  sortable: false }, 
-  // { title: 'Created',     value: 'created_at' },
+  { title: 'Title',       value: 'blog_name' },
+  { title: 'Description', value: 'blog_description',  sortable: false },
   { title: 'Actions',     value: 'actions',            sortable: false },
 ];
 
-// userProfile now has the user fields at the top level (id, name, email, role, role_id)
-// role is a nested object: { id, name, slug } — check slug for 'admin'
+const faqHeaders = [
+  { title: 'ID',       value: 'id',      width: 70 },
+  { title: 'Question', value: 'query' },
+  { title: 'Answer',   value: 'answer',  sortable: false },
+  { title: 'Actions',  value: 'actions', sortable: false, width: 100 },
+];
+
 const isAdmin = computed(() =>
   userProfile.value?.role?.slug === 'admin' || userProfile.value?.role_id === 1
 );
@@ -583,7 +649,7 @@ const clickHeaders = [
   { title: "User Name",       key: "user_name" },
   { title: "Service ID",      key: "service_id",      align: "start" },
   { title: "Service URL",     key: "service_name" },
-  { title: "Total Clicks",    key: "total_clicks",    align: "center" },
+  { title: "Total Visits",    key: "total_clicks",    align: "center" },
   { title: "Last Clicked At", key: "last_clicked_at" },
 ];
 
@@ -597,6 +663,8 @@ const approvalHeaders = [
   { title: 'Status',       value: 'status',          sortable: false },
   { title: 'Actions',      value: 'actions',         sortable: false },
 ];
+
+// ─── Helpers ──────────────────────────────────────────────────────
 
 const getImageUrl = (path) => {
   if (!path) return '';
@@ -616,7 +684,97 @@ const getCategoryName = (service) => {
   return null;
 };
 
-// ─── Blog CRUD (NEW) ──────────────────────────────────────────────
+// ─── FAQ CRUD ─────────────────────────────────────────────────────
+
+// ✅ FIX: Always re-fetch from DB so table is always in sync
+// Controller index() returns { Helpcenter: [...] } (singular key, array value)
+const loadFaqs = async () => {
+  loadingFaqs.value = true;
+  try {
+    const res  = await api.get('/helpcenters');
+    const data = res.data.Helpcenter ?? res.data.Helpcenters ?? res.data ?? [];
+    faqs.value = Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error('Failed to load FAQs', err);
+    faqs.value = [];
+  } finally {
+    loadingFaqs.value = false;
+  }
+};
+
+const openFaqDialog = async (faq = null) => {
+  Object.assign(faqForm.value, { query: '', answer: '' });
+
+  if (faq) {
+    faqIsEditing.value = true;
+    editingFaqId.value = faq.id;
+    Object.assign(faqForm.value, {
+      query:  faq.query  ?? '',
+      answer: faq.answer ?? '',
+    });
+  } else {
+    faqIsEditing.value = false;
+    editingFaqId.value = null;
+  }
+
+  await nextTick();
+  faqDialog.value = true;
+};
+
+const closeFaqDialog = () => {
+  faqDialog.value    = false;
+  faqIsEditing.value = false;
+  editingFaqId.value = null;
+  Object.assign(faqForm.value, { query: '', answer: '' });
+};
+
+const saveFaq = async () => {
+  if (!faqForm.value.query?.trim()) {
+    alert('Question is required.');
+    return;
+  }
+  if (!faqForm.value.answer?.trim()) {
+    alert('Answer is required.');
+    return;
+  }
+
+  savingFaq.value = true;
+  try {
+    if (faqIsEditing.value) {
+      await api.put(`/helpcenters/${editingFaqId.value}`, {
+        query:  faqForm.value.query,
+        answer: faqForm.value.answer,
+      });
+    } else {
+      await api.post('/helpcenters', {
+        query:  faqForm.value.query,
+        answer: faqForm.value.answer,
+      });
+    }
+    closeFaqDialog();
+    // ✅ FIX: Always re-fetch after save so table reflects exact DB state
+    await loadFaqs();
+  } catch (err) {
+    console.error('Failed to save FAQ', err);
+    alert('Failed to save FAQ. Please check both fields and try again.');
+  } finally {
+    savingFaq.value = false;
+  }
+};
+
+const deleteFaq = async (id) => {
+  if (!confirm('Delete this FAQ? It will be removed from the public FAQ page immediately.')) return;
+  try {
+    await api.delete(`/helpcenters/${id}`);
+    // ✅ FIX: Re-fetch after delete to stay in sync with DB
+    await loadFaqs();
+  } catch (err) {
+    console.error('Failed to delete FAQ', err);
+    alert('Failed to delete FAQ.');
+  }
+};
+
+// ─── Blog CRUD ────────────────────────────────────────────────────
 
 const loadBlogs = async () => {
   loadingBlogs.value = true;
@@ -632,14 +790,11 @@ const loadBlogs = async () => {
 };
 
 const openBlogDialog = async (blog = null) => {
-  // Reset first so the dialog always starts clean
   Object.assign(blogForm.value, { blog_name: '', blog_description: '', blog_image: null });
-
   if (blog) {
     blogIsEditing.value    = true;
     editingBlogId.value    = blog.id;
     blogCurrentImage.value = blog.blog_image;
-    // Mutate in-place so Vue's reactivity keeps the field bindings intact
     Object.assign(blogForm.value, {
       blog_name:        blog.blog_name        ?? '',
       blog_description: blog.blog_description ?? '',
@@ -650,15 +805,12 @@ const openBlogDialog = async (blog = null) => {
     editingBlogId.value    = null;
     blogCurrentImage.value = null;
   }
-
-  // Wait one tick so the form is fully populated before the dialog mounts
   await nextTick();
   blogDialog.value = true;
 };
 
 const closeBlogDialog = () => {
   blogDialog.value = false;
-  // Mutate in-place on close too, keeping the ref stable
   Object.assign(blogForm.value, { blog_name: '', blog_description: '', blog_image: null });
   blogIsEditing.value    = false;
   editingBlogId.value    = null;
@@ -666,7 +818,6 @@ const closeBlogDialog = () => {
 };
 
 const saveBlog = async () => {
-  // Client-side guard (mirrors controller validation)
   if (!blogForm.value.blog_name || blogForm.value.blog_name.length < 4) {
     alert('Blog title must be at least 4 characters.');
     return;
@@ -675,31 +826,22 @@ const saveBlog = async () => {
     alert('Blog description is required.');
     return;
   }
-
   savingBlog.value = true;
   const fd = new FormData();
   fd.append('blog_name',        blogForm.value.blog_name);
   fd.append('blog_description', blogForm.value.blog_description);
-
-  // v-file-input returns an array in Vuetify 3
   const imageFile = Array.isArray(blogForm.value.blog_image)
     ? blogForm.value.blog_image[0]
     : blogForm.value.blog_image;
   if (imageFile) fd.append('blog_image', imageFile);
-
   try {
     if (blogIsEditing.value) {
-      // Laravel does not support multipart PUT natively — use POST + _method spoofing
       fd.append('_method', 'PUT');
-      const res = await api.post(`/blogs/${editingBlogId.value}`, fd, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await api.post(`/blogs/${editingBlogId.value}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       const idx = blogs.value.findIndex(b => b.id === editingBlogId.value);
       if (idx !== -1) blogs.value[idx] = res.data.Blog;
     } else {
-      const res = await api.post('/blogs', fd, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await api.post('/blogs', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       blogs.value.push(res.data.Blog);
     }
     closeBlogDialog();
@@ -722,7 +864,8 @@ const deleteBlog = async (id) => {
   }
 };
 
-// ─── Manager approval functions (unchanged) ───────────────────────
+// ─── Manager Approvals ────────────────────────────────────────────
+
 const loadManagerApprovals = async () => {
   loadingApprovals.value = true;
   try {
@@ -759,7 +902,11 @@ const pauseManager = async (manager) => {
   try {
     await api.patch(`/managers/${manager.id}/pause`);
     const target = pendingManagers.value.find(m => m.id === manager.id);
-    if (target?.service) { target.service.previous_status = target.service.status; target.service.status = 'paused'; target.service.is_published = false; }
+    if (target?.service) {
+      target.service.previous_status = target.service.status;
+      target.service.status          = 'paused';
+      target.service.is_published    = false;
+    }
   } catch (err) { console.error('Failed to pause service', err); alert('Pause failed.'); }
 };
 
@@ -769,21 +916,22 @@ const unpauseManager = async (manager) => {
     const res = await api.patch(`/managers/${manager.id}/unpause`);
     const target = pendingManagers.value.find(m => m.id === manager.id);
     if (target?.service) {
-      const restored = res.data.service?.status ?? target.service.previous_status ?? 'approved';
-      target.service.status = restored;
-      target.service.is_published = restored === 'approved';
+      const restored               = res.data.service?.status ?? target.service.previous_status ?? 'approved';
+      target.service.status        = restored;
+      target.service.is_published  = restored === 'approved';
       target.service.previous_status = null;
     }
   } catch (err) { console.error('Failed to unpause service', err); alert('Unpause failed.'); }
 };
 
-// ─── Publish Service (unchanged) ──────────────────────────────────
+// ─── Publish Service ──────────────────────────────────────────────
+
 const loadApprovedServices = async () => {
   loadingServices.value  = true;
   approvedServices.value = [];
   publishSuccess.value   = '';
   try {
-    const res = await api.get('/managers');
+    const res      = await api.get('/managers');
     const managers = res.data.managers ?? res.data ?? [];
     approvedServices.value = managers.filter(m => m.service && m.service.status === 'approved');
   } catch (err) { console.error('Failed to load approved services', err); }
@@ -800,36 +948,33 @@ const publishService = async () => {
   addingService.value = true;
   try {
     await api.post(`/managers/${selectedService.value.id}/publish`);
-    publishSuccess.value = `"${selectedService.value.service?.name ?? 'Service'}" has been added to ${getCategoryName(selectedService.value.service)} successfully!`;
+    publishSuccess.value   = `"${selectedService.value.service?.name ?? 'Service'}" has been added to ${getCategoryName(selectedService.value.service)} successfully!`;
     approvedServices.value = approvedServices.value.filter(m => m.id !== selectedService.value.id);
-    selectedService.value = null;
+    selectedService.value  = null;
   } catch (err) { console.error('Failed to publish service', err); alert('Failed to add service.'); }
   finally { addingService.value = false; }
 };
 
-// ─── Admin profile ────────────────────────────────────────────────
-// /me returns { user: { id, name, email, role_id, ... }, abilities: { admin: true, ... } }
-// We merge abilities into userProfile so the template can read userProfile.abilities
+// ─── Admin Profile ────────────────────────────────────────────────
+
 const fetchAdminProfile = async () => {
   try {
     const res = await api.get("/me");
     userProfile.value = {
       ...res.data.user,
-      abilities: res.data.abilities ? Object.keys(res.data.abilities).filter(k => res.data.abilities[k]) : [],
+      abilities: res.data.abilities
+        ? Object.keys(res.data.abilities).filter(k => res.data.abilities[k])
+        : [],
     };
-  } catch (err) {
-    console.error("Failed to load admin profile info", err);
-  }
+  } catch (err) { console.error("Failed to load admin profile info", err); }
 };
 
 const fetchUsers = async () => {
   loadingUsers.value = true;
   try {
-    const res = await api.get("/users");
-    // Backend returns { users: [...] } or { user: [...] } — handle both
+    const res   = await api.get("/users");
     users.value = res.data.users ?? res.data.user ?? [];
-  }
-  catch (err) { console.error("Failed to load users", err); }
+  } catch (err) { console.error("Failed to load users", err); }
   finally { loadingUsers.value = false; }
 };
 
@@ -837,11 +982,8 @@ const loadContacts = async () => {
   currentView.value     = 'contacts';
   loadingContacts.value = true;
   try {
-    // Admin endpoint returns all messages with replies
-    // isAdmin is now reliably set since fetchAdminProfile runs before loadContacts
-    const endpoint = isAdmin.value ? '/contactuses/admin/messages' : '/contactuses';
-    const res = await api.get(endpoint);
-    // Backend returns { Contactus: [...] } or array directly
+    const endpoint = isAdmin.value ? '/contactuses' : '/contactuses/admin/messages';
+    const res      = await api.get(endpoint);
     contacts.value = res.data.Contactus ?? res.data.contactus ?? res.data ?? [];
   } catch (err) {
     console.error('Failed to load contacts', err);
@@ -853,11 +995,13 @@ const loadContacts = async () => {
 
 const deleteContact = async (id) => {
   if (!confirm('Are you sure you want to delete this message?')) return;
-  try { await api.delete(`/contactuses/${id}`); contacts.value = contacts.value.filter(c => c.id !== id); }
-  catch (err) { console.error('Failed to delete contact', err); alert('Failed to delete message'); }
+  try {
+    await api.delete(`/contactuses/${id}`);
+    contacts.value = contacts.value.filter(c => c.id !== id);
+  } catch (err) { console.error('Failed to delete contact', err); alert('Failed to delete message'); }
 };
 
-const viewContact = (contact) => { selectedContact.value = contact; viewDialog.value = true; };
+const viewContact     = (contact) => { selectedContact.value = contact; viewDialog.value = true; };
 
 const openReplyDialog = (contact) => {
   if (!isAdmin.value) { alert('Only administrators can send replies'); return; }
@@ -874,7 +1018,7 @@ const sendReply = async () => {
   sendingReply.value = true;
   try {
     const response = await api.post(`/contactuses/${selectedContact.value.id}/reply`, { reply: replyText.value });
-    const index = contacts.value.findIndex(c => c.id === selectedContact.value.id);
+    const index    = contacts.value.findIndex(c => c.id === selectedContact.value.id);
     if (index !== -1) contacts.value[index] = response.data.Contactus;
     alert('Reply sent successfully!');
     closeReplyDialog();
@@ -884,32 +1028,36 @@ const sendReply = async () => {
 
 const fetchClicks = async () => {
   loadingClicks.value = true;
-  try { const res = await api.get("/click-analytics"); clicks.value = res.data; }
-  catch (err) { console.error("Failed to load clicks", err); }
+  try {
+    const res    = await api.get("/click-analytics");
+    clicks.value = res.data;
+  } catch (err) { console.error("Failed to load clicks", err); }
   finally { loadingClicks.value = false; }
 };
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return new Date(dateString).toLocaleString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
 };
+
+// ─── Mount ────────────────────────────────────────────────────────
 
 onMounted(async () => {
   try {
-    // fetchAdminProfile MUST complete first — isAdmin, loadContacts, and
-    // fetchUsers all depend on userProfile being populated correctly.
     await fetchAdminProfile();
-
-    // Now isAdmin is reliable — run all data fetches in parallel
     await Promise.all([
       fetchUsers(),
       fetchClicks(),
       loadManagerApprovals(),
       VacationStore.getVacations(),
       ServiceStore.getServices(),
+      // ✅ FIX: Pre-load FAQs on mount so they are ready
+      // even before the user clicks the FAQ nav item
+      loadFaqs(),
     ]);
-
-    // loadContacts sets currentView — run after parallel fetches
     await loadContacts();
   } catch (error) {
     console.error("Error loading dashboard data:", error);

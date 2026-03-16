@@ -135,6 +135,22 @@
             <p>{{ tip.text }}</p>
           </div>
         </div>
+
+        <!-- Blog CTA -->
+        <div class="tips-blog-cta">
+          <p>
+            Planning your first trip to Kenya? Our blog covers everything you need to know —
+            from visa requirements and health precautions to currency tips and the best time
+            to visit. We've done the research so you don't have to.
+          </p>
+          <router-link to="/blog" class="tips-blog-btn">
+            Read the Full Kenya Travel Guide
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </router-link>
+        </div>
+
       </div>
     </section>
 
@@ -176,10 +192,9 @@ export default {
           ],
           bestTime: 'Year-round; dry seasons (Jan–Feb, Jul–Oct) for wildlife',
           images: [
-            'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=900&q=80&fit=crop',
+            'public/images/nairobi-national-park-main-gate.jpeg',
             'public/images/baby-elephant-walking-herd.jpg',
             'public/images/Picture 22 .jpg',
-            
           ],
         },
         {
@@ -201,7 +216,6 @@ export default {
             'public/images/Fort Jesus.jpg',
             'public/images/Mombasa.jpg',
             'public/images/marine-park-mombasa.jpg',
-            
           ],
         },
         {
@@ -223,7 +237,6 @@ export default {
             'public/images/Picture 18 .jpg',
             'public/images/Picture 19 .jpg',
             'public/images/Hotair balloon.jpg',
-
           ],
         },
         {
@@ -242,7 +255,7 @@ export default {
           ],
           bestTime: 'June – October & January – February',
           images: [
-            'public/images/Elephant.jpg',
+            'public/images/Herd of Elephants.jpg',
             'public/images/Mount Kilimanjaro.jpg',
             'https://images.unsplash.com/photo-1574068468668-a05a11f871da?w=600&q=80&fit=crop',
           ],
@@ -255,7 +268,7 @@ export default {
           intro:
             'A saline jewel in the Rift Valley floor, Lake Nakuru turns rose-pink at dawn as tens of thousands of lesser flamingos wade its shallow shores in mesmerizing formations.',
           detail:
-            "Located in the Great Rift Valley, the alkaline Lake Nakuru sits at approximately 1,754 meters (5,755 ft), surrounded by acacia woodland and yellow-barked fever trees. Though water levels have fluctuated in recent years—sometimes driving populations to nearby lakes—lesser flamingos still congregate in significant numbers to feed on the lake's algae, often creating a brilliant pink edge. While boat rides are now available in specific sections of Lake Nakuru National Park, the primary hippo-watching boat safaris are usually associated with the neighboring freshwater Lake Naivasha. NearbyCrescent Island Game Sanctuary (on Lake Naivasha) provides an intimate walking safari experience among zebra, giraffe, and waterbuck. Just a short distance from NaivashaHell’s Gate National Park offers a unique opportunity to cycle or hike past dramatic gorges and geothermal steam vents, providing a completely different, rugged Kenyan experience within the same rift valley landscape.",
+            "Located in the Great Rift Valley, the alkaline Lake Nakuru sits at approximately 1,754 meters (5,755 ft), surrounded by acacia woodland and yellow-barked fever trees. Though water levels have fluctuated in recent years—sometimes driving populations to nearby lakes—lesser flamingos still congregate in significant numbers to feed on the lake's algae, often creating a brilliant pink edge. While boat rides are now available in specific sections of Lake Nakuru National Park, the primary hippo-watching boat safaris are usually associated with the neighboring freshwater Lake Naivasha. Nearby Crescent Island Game Sanctuary (on Lake Naivasha) provides an intimate walking safari experience among zebra, giraffe, and waterbuck. Just a short distance from Naivasha Hell's Gate National Park offers a unique opportunity to cycle or hike past dramatic gorges and geothermal steam vents, providing a completely different, rugged Kenyan experience within the same rift valley landscape.",
           highlights: [
             { icon: '🦩', label: 'Lesser Flamingos', value: 'Tens of thousands year-round' },
             { icon: '🦛', label: 'Hippo Pods', value: 'Boat safaris on the lake' },
@@ -281,7 +294,7 @@ export default {
           name: 'Tsavo National Parks',
           tagline: "Kenya's largest wilderness",
           desc: 'Two vast parks — Tsavo East & West — covering over 20,000 km² with red-dust elephants, volcanic landscapes, and the Ngulia Hills.',
-          image: 'https://images.unsplash.com/photo-1535941339077-2dd1c7963098?w=700&q=80&fit=crop',
+          image: 'public/images/Elephant.jpg',
         },
         {
           name: 'Mount Kenya',
@@ -345,3 +358,57 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+/* Blog CTA block inside Travel Tips section */
+.tips-blog-cta {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  padding: 32px 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tips-blog-cta p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.75;
+  margin: 0;
+}
+
+.tips-blog-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ff9800;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.4px;
+  padding: 12px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.tips-blog-btn:hover {
+  background: #ffb74d;
+  transform: translateY(-2px);
+}
+
+.tips-blog-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.tips-blog-btn:hover svg {
+  transform: translateX(4px);
+}
+</style>

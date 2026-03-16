@@ -35,14 +35,14 @@ function viewDetails(vacation) {
         <img src="/images/Picture 25 .jpg" alt="Header Image" class="hero-image" />
         <div class="hero-overlay">
           <h1 class="text-center text-3xl font-bold text-primary title-glow">
-            Vacation Hotels
+            Kenya's Vacation Hotels
           </h1>
         </div>
       </div>
     </div>
 
     <v-container class="py-10 content-body" fluid>
-      <div class="search-wrapper mb-10 px-4">
+      <div class="search-wrapper mb-6 px-4">
         <v-text-field
           v-model="searchQuery"
           label="Search for a Vacation Hotel..."
@@ -51,6 +51,19 @@ function viewDetails(vacation) {
           clearable
           class="search-field"
         />
+      </div>
+
+      <!-- SEO Description Block -->
+      <div class="seo-description px-4 mb-10">
+        <p>
+          Kenya offers a wide selection of vacation hotels perfect for tourists seeking
+          comfort, luxury, and unforgettable experiences. From city hotels in
+          <strong>Nairobi</strong> to beach resorts along the <strong>Kenyan coast</strong>
+          and safari lodges near national parks, travelers can find accommodation that suits
+          every budget and travel style. Whether you are planning a relaxing holiday,
+          wildlife safari, or cultural adventure, these vacation hotels provide modern
+          amenities, excellent hospitality, and easy access to Kenya's top attractions.
+        </p>
       </div>
 
       <div v-if="store.loading" class="text-center py-10">
@@ -112,6 +125,23 @@ function viewDetails(vacation) {
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)); display: flex; align-items: center; justify-content: center; }
 .content-body { position: relative; z-index: 2; background-color: #000; }
 .search-field { max-width: 350px; background: rgba(255,255,255,0.05); border-radius: 8px; }
+
+/* SEO Description */
+.seo-description {
+  max-width: 860px;
+  border-left: 3px solid #ff9800;
+  padding-left: 16px;
+}
+.seo-description p {
+  font-size: 0.97rem;
+  color: #c8c8c8;
+  line-height: 1.75;
+}
+.seo-description strong {
+  color: #ff9800;
+  font-weight: 600;
+}
+
 .card-border-wrapper { position: relative; padding: 8px; border-radius: 68px; overflow: hidden; height: 100%; display: flex; transition: transform 0.3s ease; }
 .card-border-wrapper::before { content: ""; position: absolute; inset: 0; background-image: url('/images/Picture 5 .jpg'); background-size: cover; background-position: center; border-radius: 68px; z-index: 0; }
 .card-border-wrapper:hover { transform: translateY(-10px); }

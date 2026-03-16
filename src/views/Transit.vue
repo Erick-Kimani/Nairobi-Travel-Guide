@@ -36,14 +36,14 @@ function viewDetails(transit) {
         <img src="/images/Picture 29 .jpg" alt="Header Image" class="hero-image" />
         <div class="hero-overlay">
           <h1 class="text-center text-3xl font-bold text-primary title-glow">
-            Our Transit Lodges
+        Nairobi transit hotels
           </h1>
         </div>
       </div>
     </div>
 
     <v-container class="py-10 content-body" fluid>
-      <div class="search-wrapper mb-10 px-4">
+      <div class="search-wrapper mb-6 px-4">
         <v-text-field
           v-model="searchQuery"
           label="Search for a Transit..."
@@ -52,6 +52,18 @@ function viewDetails(transit) {
           clearable
           class="search-field"
         />
+      </div>
+
+      <!-- SEO Description Block -->
+      <div class="seo-description px-4 mb-10">
+        <p>
+          Transit hotels are ideal for travelers with short layovers or early morning flights.
+          Located close to major airports such as <strong>Jomo Kenyatta International Airport (JKIA)</strong>,
+          these hotels provide convenient accommodation for passengers needing rest between flights.
+          Most transit hotels offer flexible check-in times, <strong>airport shuttle services</strong>,
+          and comfortable rooms designed for short stays — perfect for international travelers,
+          business visitors, and tourists connecting to other destinations across Kenya.
+        </p>
       </div>
 
       <!-- Loading state -->
@@ -170,6 +182,22 @@ function viewDetails(transit) {
   max-width: 350px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
+}
+
+/* --- SEO Description --- */
+.seo-description {
+  max-width: 860px;
+  border-left: 3px solid #ff9800;
+  padding-left: 16px;
+}
+.seo-description p {
+  font-size: 0.97rem;
+  color: #c8c8c8;
+  line-height: 1.75;
+}
+.seo-description strong {
+  color: #ff9800;
+  font-weight: 600;
 }
 
 /* --- CARD BORDER --- */

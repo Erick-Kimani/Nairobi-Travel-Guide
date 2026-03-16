@@ -35,14 +35,14 @@ function viewDetails(safari) {
         <img src="/images/4 wheel drive.jpg" alt="Header Image" class="hero-image" />
         <div class="hero-overlay">
           <h1 class="text-center text-3xl font-bold text-primary title-glow">
-            Tours and Safaris
+       Kenya safari tours
           </h1>
         </div>
       </div>
     </div>
 
     <v-container class="py-10 content-body" fluid>
-      <div class="search-wrapper mb-10 px-4">
+      <div class="search-wrapper mb-6 px-4">
         <v-text-field
           v-model="searchQuery"
           label="Search for a Tours and Safaris..."
@@ -51,6 +51,19 @@ function viewDetails(safari) {
           clearable
           class="search-field"
         />
+      </div>
+
+      <!-- SEO Description Block -->
+      <div class="seo-description px-4 mb-10">
+        <p>
+          Kenya is one of the world's leading safari destinations, offering breathtaking wildlife
+          experiences and scenic landscapes. Our guided safaris take you to famous destinations
+          such as <strong>Maasai Mara National Reserve</strong>, <strong>Amboseli National Park</strong>,
+          and other iconic parks across the country. Choose from wildlife safaris, cultural tours,
+          beach excursions, and adventure travel packages — whether you want to witness the
+          <strong>Great Migration</strong>, explore Kenya's natural beauty, or experience authentic
+          African culture. Every tour is designed for a safe, memorable, and immersive journey.
+        </p>
       </div>
 
       <div v-if="store.loading" class="text-center py-10">
@@ -112,6 +125,23 @@ function viewDetails(safari) {
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)); display: flex; align-items: center; justify-content: center; }
 .content-body { position: relative; z-index: 2; background-color: #000; }
 .search-field { max-width: 350px; background: rgba(255,255,255,0.05); border-radius: 8px; }
+
+/* SEO Description */
+.seo-description {
+  max-width: 860px;
+  border-left: 3px solid #ff9800;
+  padding-left: 16px;
+}
+.seo-description p {
+  font-size: 0.97rem;
+  color: #c8c8c8;
+  line-height: 1.75;
+}
+.seo-description strong {
+  color: #ff9800;
+  font-weight: 600;
+}
+
 .card-border-wrapper { position: relative; padding: 8px; border-radius: 68px; overflow: hidden; height: 100%; display: flex; transition: transform 0.3s ease; }
 .card-border-wrapper::before { content: ""; position: absolute; inset: 0; background-image: url('/images/Picture 5 .jpg'); background-size: cover; background-position: center; border-radius: 68px; z-index: 0; }
 .card-border-wrapper:hover { transform: translateY(-10px); }

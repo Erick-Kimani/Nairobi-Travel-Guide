@@ -87,12 +87,12 @@ const routes = [
     component: ClickAnalytics,
     meta: { requiresAuth: true, ability: ['admin', 'manager'] },
   },
-  {
-    path: '/specialregistration',
-    name: 'specialregistration',
-    component: SpecialRegistration,
-    meta: { requiresAuth: true, ability: 'admin' },
-  },
+ {
+  path: '/specialregistration',
+  name: 'specialregistration',
+  component: SpecialRegistration,
+  meta: { requiresAuth: false },
+},
 
   /* ── Fallback ── */
   { path: '/:catchAll(.*)', redirect: '/' },

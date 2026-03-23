@@ -6,7 +6,8 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title class="font-weight-bold">Admin Dashboard</v-toolbar-title>
       <v-spacer />
-      <v-btn icon="mdi-bell-outline" class="mr-2" router-link to="/specialregistration" />
+      <!-- Bell icon now opens the invite link dialog instead of routing -->
+      <v-btn icon="mdi-bell-outline" class="mr-2" @click="openInviteDialog" />
       <v-avatar color="secondary" size="35" class="mr-4">
         {{ userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'AD' }}
       </v-avatar>
@@ -314,7 +315,6 @@
                 <v-toolbar flat color="white">
                   <v-toolbar-title class="text-h6 font-weight-medium">FAQs Management</v-toolbar-title>
                   <v-spacer />
-                  <!-- ✅ Refresh button so admin can manually re-sync -->
                   <v-btn icon="mdi-refresh" class="mr-2" @click="loadFaqs" :loading="loadingFaqs" />
                   <v-btn color="primary" prepend-icon="mdi-plus" variant="elevated" rounded="pill" @click="openFaqDialog()">
                     Add FAQ
@@ -536,6 +536,88 @@
       </v-card>
     </v-dialog>
 
+    <!-- ══════════════════════════════════════════════════════
+         Manager Invite Link Dialog
+         Opened by the bell icon in the app bar.
+         Generates a one-time, 48-hour invite link the admin
+         can copy and send to an approved manager via email.
+    ══════════════════════════════════════════════════════ -->
+    <v-dialog v-model="inviteDialog" max-width="560" persistent>
+      <v-card rounded="xl">
+        <v-card-title class="pa-6 text-h5 d-flex align-center ga-2">
+          <v-icon color="primary">mdi-link-variant</v-icon>
+          Generate Manager Invite Link
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-6">
+
+          <p class="text-body-2 text-grey mb-5">
+            Generate a one-time invite link to send to an approved manager.
+            The link expires in <strong>48 hours</strong> and can only be used once.
+          </p>
+
+          <!-- After generation — show the link -->
+          <div v-if="generatedInviteLink">
+            <v-alert type="success" variant="tonal" class="mb-4">
+              Invite link generated successfully. Copy it and send it to the manager.
+            </v-alert>
+            <v-text-field
+              :model-value="generatedInviteLink"
+              readonly
+              variant="outlined"
+              label="Invite Link"
+              append-inner-icon="mdi-content-copy"
+              @click:append-inner="copyInviteLink"
+              hint="Click the copy icon to copy the link"
+              persistent-hint
+            />
+            <p v-if="inviteCopied" class="text-caption text-green mt-2">
+              ✓ Link copied to clipboard!
+            </p>
+          </div>
+
+          <!-- Before generation -->
+          <div v-else class="d-flex flex-column align-center py-4">
+            <v-icon size="48" color="primary" class="mb-3">mdi-email-fast-outline</v-icon>
+            <p class="text-body-2 text-center text-grey">
+              Click the button below to generate a unique invite link
+              for the approved manager.
+            </p>
+          </div>
+
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-6">
+          <v-spacer />
+          <v-btn variant="text" @click="closeInviteDialog">Close</v-btn>
+          <!-- Generate button — shown before a link exists -->
+          <v-btn
+            v-if="!generatedInviteLink"
+            color="primary"
+            variant="elevated"
+            rounded="pill"
+            prepend-icon="mdi-link-plus"
+            :loading="generatingInvite"
+            @click="generateInviteLink"
+          >
+            Generate Link
+          </v-btn>
+          <!-- Generate New button — shown after a link has been generated -->
+          <v-btn
+            v-else
+            color="secondary"
+            variant="elevated"
+            rounded="pill"
+            prepend-icon="mdi-refresh"
+            :loading="generatingInvite"
+            @click="generateInviteLink"
+          >
+            Generate New Link
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-app>
 </template>
 
@@ -602,6 +684,12 @@ const faqForm = ref({
   query:  '',
   answer: '',
 });
+
+// ─── Invite Link state ────────────────────────────────────────────
+const inviteDialog        = ref(false);
+const generatedInviteLink = ref('');
+const generatingInvite    = ref(false);
+const inviteCopied        = ref(false);
 
 // ─── Table Headers ────────────────────────────────────────────────
 
@@ -686,8 +774,6 @@ const getCategoryName = (service) => {
 
 // ─── FAQ CRUD ─────────────────────────────────────────────────────
 
-// ✅ FIX: Always re-fetch from DB so table is always in sync
-// Controller index() returns { Helpcenter: [...] } (singular key, array value)
 const loadFaqs = async () => {
   loadingFaqs.value = true;
   try {
@@ -752,7 +838,6 @@ const saveFaq = async () => {
       });
     }
     closeFaqDialog();
-    // ✅ FIX: Always re-fetch after save so table reflects exact DB state
     await loadFaqs();
   } catch (err) {
     console.error('Failed to save FAQ', err);
@@ -766,7 +851,6 @@ const deleteFaq = async (id) => {
   if (!confirm('Delete this FAQ? It will be removed from the public FAQ page immediately.')) return;
   try {
     await api.delete(`/helpcenters/${id}`);
-    // ✅ FIX: Re-fetch after delete to stay in sync with DB
     await loadFaqs();
   } catch (err) {
     console.error('Failed to delete FAQ', err);
@@ -916,10 +1000,10 @@ const unpauseManager = async (manager) => {
     const res = await api.patch(`/managers/${manager.id}/unpause`);
     const target = pendingManagers.value.find(m => m.id === manager.id);
     if (target?.service) {
-      const restored               = res.data.service?.status ?? target.service.previous_status ?? 'approved';
-      target.service.status        = restored;
-      target.service.is_published  = restored === 'approved';
-      target.service.previous_status = null;
+      const restored                  = res.data.service?.status ?? target.service.previous_status ?? 'approved';
+      target.service.status           = restored;
+      target.service.is_published     = restored === 'approved';
+      target.service.previous_status  = null;
     }
   } catch (err) { console.error('Failed to unpause service', err); alert('Unpause failed.'); }
 };
@@ -1043,6 +1127,44 @@ const formatDate = (dateString) => {
   });
 };
 
+// ─── Invite Link ──────────────────────────────────────────────────
+
+const openInviteDialog = () => {
+  generatedInviteLink.value = '';
+  inviteCopied.value        = false;
+  inviteDialog.value        = true;
+};
+
+const closeInviteDialog = () => {
+  inviteDialog.value        = false;
+  generatedInviteLink.value = '';
+  inviteCopied.value        = false;
+};
+
+const generateInviteLink = async () => {
+  generatingInvite.value = true;
+  inviteCopied.value     = false;
+  try {
+    const res = await api.post('/generate-invite');
+    generatedInviteLink.value = res.data.link;
+  } catch (err) {
+    console.error('Failed to generate invite link', err);
+    alert('Failed to generate invite link. Please try again.');
+  } finally {
+    generatingInvite.value = false;
+  }
+};
+
+const copyInviteLink = async () => {
+  try {
+    await navigator.clipboard.writeText(generatedInviteLink.value);
+    inviteCopied.value = true;
+    setTimeout(() => { inviteCopied.value = false; }, 3000);
+  } catch {
+    alert('Could not copy automatically. Please copy the link manually.');
+  }
+};
+
 // ─── Mount ────────────────────────────────────────────────────────
 
 onMounted(async () => {
@@ -1054,8 +1176,6 @@ onMounted(async () => {
       loadManagerApprovals(),
       VacationStore.getVacations(),
       ServiceStore.getServices(),
-      // ✅ FIX: Pre-load FAQs on mount so they are ready
-      // even before the user clicks the FAQ nav item
       loadFaqs(),
     ]);
     await loadContacts();

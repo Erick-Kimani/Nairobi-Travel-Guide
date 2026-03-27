@@ -162,8 +162,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/services/api";
+import { event } from 'vue-gtag'
 
 const router = useRouter();
+
 
 const name = ref("");
 const email = ref("");
@@ -179,6 +181,10 @@ async function signup() {
       password: password.value,
       password_confirmation: password_confirmation.value,
     });
+
+    // ✅ GA4: Track successful registration
+    event('sign_up', { method: 'email' });
+
     alert("Registration successful! Please log in.");
     router.push("/login");
   } catch (error) {
@@ -187,8 +193,9 @@ async function signup() {
   }
 }
 
-// Redirects to your Laravel backend Google OAuth route
 function signupWithGoogle() {
+  // ✅ GA4: Track Google sign-up attempt
+  event('sign_up', { method: 'google' });
   window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google/redirect`;
 }
 

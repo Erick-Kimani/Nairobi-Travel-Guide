@@ -95,7 +95,7 @@ function viewDetails(transit) {
               </div>
 
               <v-card-text class="pt-4">
-                <h3 class="card-title">{{ transit.name }}:</h3>
+                <h3 class="card-title">{{ transit.name }}</h3>
               <br>
                 <p class="description">{{ transit.description }}</p>
               </v-card-text>

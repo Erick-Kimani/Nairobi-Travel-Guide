@@ -89,7 +89,7 @@ function viewDetails(vacation) {
                 <v-img :src="vacation.image" height="230" cover />
               </div>
               <v-card-text class="pt-4">
-                <h3 class="card-title">{{ vacation.name }}:</h3>
+                <h3 class="card-title">{{ vacation.name }}</h3>
                 <br>
                 <p class="description">{{ vacation.description }}</p>
               </v-card-text>

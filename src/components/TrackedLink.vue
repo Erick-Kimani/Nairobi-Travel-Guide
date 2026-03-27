@@ -12,47 +12,53 @@
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue';
 import clickService from '@/services/clickService';
+import { event } from 'vue-gtag'
 
 const props = defineProps({
   serviceId: { 
     type: Number, 
     required: true 
   },
+  serviceName: {
+    type: String,
+    default: 'Unknown Service' // ✅ GA4: Added so we can name the service in reports
+  },
   redirectUrl: {
     type: String,
-    default: null // Optional: pass URL directly if already known
+    default: null
   },
   openInNewTab: {
     type: Boolean,
-    default: true // Control whether to open in new tab
+    default: true
   }
 });
 
 const emit = defineEmits(['click-tracked', 'click-error']);
-
 const isLoading = ref(false);
 
 async function handleClick() {
-  if (isLoading.value) return; // Prevent double-clicks
+  if (isLoading.value) return;
   
   isLoading.value = true;
 
   try {
-    // Ensure CSRF cookie is set (for Sanctum)
     await clickService.getCsrfCookie();
 
-    // Track click via POST
     const { data } = await clickService.trackClick(props.serviceId);
 
     console.log('Click tracked successfully!', data);
 
-    // Emit success event
+    // ✅ GA4: Track this service click with its name and ID
+    event('service_click', {
+      service_id:   props.serviceId,
+      service_name: props.serviceName,
+      page_location: window.location.href
+    });
+
     emit('click-tracked', data);
 
-    // Determine redirect URL
     const targetUrl = props.redirectUrl || data.redirect_url;
 
-    // Open service URL
     if (targetUrl && targetUrl !== '#') {
       if (props.openInNewTab) {
         window.open(targetUrl, '_blank', 'noopener,noreferrer');
@@ -64,11 +70,8 @@ async function handleClick() {
     }
   } catch (err) {
     console.error('Click tracking failed', err);
-    
-    // Emit error event
     emit('click-error', err);
 
-    // Optional: Show user-friendly error message
     if (err.response?.status === 401) {
       alert('Please log in to access this service');
     } else {

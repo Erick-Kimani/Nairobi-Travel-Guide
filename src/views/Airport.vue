@@ -88,7 +88,7 @@ function viewDetails(transfer) {
                 <v-img :src="transfer.image" height="240" cover />
               </div>
               <v-card-text class="pt-4">
-                <h3 class="card-title">{{ transfer.name }}:</h3>
+                <h3 class="card-title">{{ transfer.name }}</h3>
                 <br>
                 <p class="description">{{ transfer.description }}</p>
               </v-card-text>

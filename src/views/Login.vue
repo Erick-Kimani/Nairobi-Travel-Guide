@@ -121,9 +121,11 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import api, { initCsrf } from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
+import {event} from 'vue-gtag'; 
 
 const router    = useRouter();
 const authStore = useAuthStore();
+
 
 const email        = ref('');
 const password     = ref('');
@@ -131,26 +133,21 @@ const showPassword = ref(false);
 
 async function login() {
   try {
-    // Step 1: Initialise the CSRF cookie and start a Laravel session.
-    // This GET to /sanctum/csrf-cookie sets the XSRF-TOKEN cookie so
-    // the subsequent POST is accepted without a 419 error, and also
-    // starts the Laravel session that Sanctum uses to track auth state.
     await initCsrf();
 
-    // Step 2: Login — Laravel authenticates and stores the user in the session.
-    // The session cookie (httpOnly) is set automatically in the response.
     const response = await api.post('/login', {
       email:    email.value,
       password: password.value,
     });
 
-    // Step 3: Store non-sensitive user data in Pinia and sessionStorage.
     authStore.login({
       user:      response.data.user,
       abilities: response.data.abilities,
     });
 
-    // Step 4: Route based on role
+    // ✅ GA4: Track successful email login
+    event('login', { method: 'email' });
+
     if (response.data.abilities?.admin === true) {
       router.push('/administrator');
     } else {
@@ -164,6 +161,8 @@ async function login() {
 }
 
 function loginWithGoogle() {
+  // ✅ GA4: Track Google login attempt
+  event('login', { method: 'google' });
   window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google/redirect`;
 }
 

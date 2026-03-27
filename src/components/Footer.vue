@@ -67,8 +67,8 @@ const handleLogout = async () => {
       <div class="footer-section contact">
         <h3>Contact Us</h3>
         <!-- <p>123 Luxury Lane, Suite 500<br>Beverly Hills, CA 90210</p> -->
-        <p class="contact-item"><strong>Phone:</strong> +254 791018109</p>
-        <p class="contact-item"><strong>Email:</strong> harrymephis@gmail.com</p>
+        <p class="contact-item"><strong>Phone:</strong> +254 723142855</p>
+        <p class="contact-item"><strong>Email:</strong> njobens750@gmail.com</p>
         
         <!-- Logout Button (only shows when authenticated) -->
         <div v-if="isAuthenticated" class="logout-section">

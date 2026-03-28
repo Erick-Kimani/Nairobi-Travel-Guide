@@ -4,12 +4,12 @@ import '@/assets/home.css'
 
 // 1. List your image paths here
 const images = [
-  "public/images/Picture 1 .jpg",
-  "public/images/Picture 2 .jpg",
-  "public/images/safari-land-cruiser-hire.png",
-  "public/images/Picture 25 .jpg",
-  "public/images/Picture 29 .jpg",
-  "public/images/Picture 35 .jpg",
+  "/images/Picture 1 .jpg",
+  "/images/Picture 2 .jpg",
+  "/images/safari-land-cruiser-hire.png",
+  "/images/Picture 25 .jpg",
+  "/images/Picture 29 .jpg",
+  "/images/Picture 35 .jpg",
 ];
 
 const currentIndex = ref(0);

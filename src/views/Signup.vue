@@ -212,7 +212,7 @@ function goToLogin() {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background-image: url('public/images/Upperhill Nairobi.jpg');
+  background-image: url('/images/Upperhill Nairobi.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

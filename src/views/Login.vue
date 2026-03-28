@@ -176,7 +176,7 @@ function goToSignup() {
 
 .login-root {
   min-height: 100vh; position: relative; overflow: hidden;
-  background-image: url('public/images/Nairobi-Kenyas-Capital-Cityscapes-Skylines-By-Antony-Trivet-Travel-Photographers-16.jpg');
+  background-image: url('/images/Nairobi-Kenyas-Capital-Cityscapes-Skylines-By-Antony-Trivet-Travel-Photographers-16.jpg');
   background-size: cover; background-position: center; background-repeat: no-repeat;
   font-family: 'DM Sans', sans-serif;
 }

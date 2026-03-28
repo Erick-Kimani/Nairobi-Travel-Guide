@@ -80,7 +80,7 @@ const handleLogout = async () => {
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; {{ currentYear }} LuxeStays. All rights reserved.</p>
+      <p>&copy; {{ currentYear }} NairobiTravelGuide. All rights reserved.</p>
     </div>
   </footer>
 </template>

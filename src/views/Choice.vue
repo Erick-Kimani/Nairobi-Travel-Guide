@@ -29,7 +29,7 @@ const choices = ref([
     title: 'Tours and Safaris',
     description: 'Comfortable transit options and curated local experiences.',
     link: '/safari',
-    image: 'public/images/4 wheel drive.jpg'
+    image: '/images/4 wheel drive.jpg'
   }
 ])
 </script>

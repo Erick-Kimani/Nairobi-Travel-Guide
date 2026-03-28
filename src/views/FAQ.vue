@@ -7,7 +7,7 @@
     <section class="faq-hero">
       <div
         class="faq-hero__bg"
-        style="background-image: url('public/images/FAQs .jpg');"
+        style="background-image: url('/images/FAQs .jpg');"
       />
       <div class="faq-hero__overlay" />
 

@@ -23,6 +23,8 @@
   box-sizing: border-box;
   max-width: 1200px;
   margin: auto;
+  flex-wrap: nowrap;        /* FIX: prevent rows from wrapping */
+  gap: 12px;                /* FIX: consistent spacing between sections */
 }
 
 /* ─── Brand ─────────────────────────────────────────────────── */
@@ -31,6 +33,7 @@
   align-items: center;
   cursor: pointer;
   text-decoration: none;
+  flex-shrink: 0;           /* FIX: brand never shrinks */
 }
 
 /* ─── Luxury Title ──────────────────────────────────────────── */
@@ -58,18 +61,22 @@
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 16px;
+  gap: 4px;                 /* FIX: tightened from 16px so links take less space */
   align-items: center;
   margin: 0;
   padding: 0;
+  flex: 1;                  /* FIX: takes remaining space but doesn't overflow */
+  flex-wrap: nowrap;        /* FIX: never wraps to a second row */
+  justify-content: center;  /* FIX: centers links in available space */
+  overflow: hidden;         /* FIX: prevents bleeding into CTA area */
 }
 
 .nav-link {
   text-decoration: none;
   color: #e5e7eb;
-  font-size: 0.95rem;
+  font-size: 0.9rem;        /* FIX: slightly reduced from 0.95rem to breathe easier */
   font-weight: 500;
-  padding: 8px 18px;
+  padding: 8px 12px;        /* FIX: reduced horizontal padding from 18px */
   border-radius: 999px;
   transition: all 0.3s ease;
   background: none;
@@ -78,6 +85,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;      /* FIX: nav link text never wraps */
 }
 
 .nav-link:hover {
@@ -183,6 +191,12 @@
 }
 
 /* ─── Desktop CTA Button ────────────────────────────────────── */
+.nav-actions {
+  flex-shrink: 0;           /* FIX: Sign In container never shrinks */
+  display: flex;
+  align-items: center;
+}
+
 .btn-outline {
   font-family: 'Poppins', sans-serif;
   color: #ffffff;
@@ -192,6 +206,10 @@
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
+  white-space: nowrap;      /* FIX: "Sign In" text never breaks onto two lines */
+  display: inline-flex;     /* FIX: proper inline sizing */
+  align-items: center;
+  line-height: 1;           /* FIX: prevents accidental line-height expansion */
 }
 
 .btn-outline:hover {
@@ -214,6 +232,7 @@
   cursor: pointer;
   padding: 4px;
   z-index: 1100;
+  flex-shrink: 0;           /* FIX: hamburger never shrinks on small screens */
 }
 
 .hamburger span {
@@ -396,7 +415,24 @@
 }
 
 /* ─── Responsive Breakpoints ────────────────────────────────── */
-@media (max-width: 768px) {
+
+/* FIX: intermediate breakpoint — tighten links further on mid-size screens */
+@media (max-width: 960px) {
+  .nav-links {
+    gap: 2px;
+  }
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 7px 9px;
+  }
+  .luxury-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* FIX: raised breakpoint from 768px to 900px so hamburger kicks in
+   before the layout ever gets crowded enough to squeeze the Sign In button */
+@media (max-width: 900px) {
   .nav-links   { display: none; }
   .nav-actions { display: none; }
   .hamburger   { display: flex; }

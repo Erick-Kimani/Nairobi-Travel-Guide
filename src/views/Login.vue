@@ -106,8 +106,9 @@
 
       </v-card-text>
 
-      <div class="card-watermark">NBO</div>
+      <div class="card-watermark">Nairobi</div>
     </v-card>
+    <div class="card-watermark">Nairobi</div>
 
     <div class="bottom-badge mt-6 animate-drop-delayed">
       🌍 &nbsp;Trusted by 10,000+ Nairobi explorers

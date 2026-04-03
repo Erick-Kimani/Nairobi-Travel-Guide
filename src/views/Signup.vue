@@ -147,7 +147,7 @@
       </v-card-text>
 
       <!-- Card bottom watermark -->
-      <div class="card-watermark">NBO</div>
+      <div class="card-watermark">Nairobi</div>
     </v-card>
 
     <!-- Bottom badge -->

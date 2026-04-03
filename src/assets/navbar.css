@@ -187,11 +187,13 @@
   font-family: 'Poppins', sans-serif;
   color: #ffffff;
   border: 2px solid #d4af37;
-  padding: 10px 24px;
+  padding: 7px 16px;        /* reduced from 10px 24px */
   border-radius: 999px;
   font-weight: 600;
+  font-size: 0.85rem;       /* reduced from default ~1rem */
   text-decoration: none;
   transition: all 0.3s ease;
+  white-space: nowrap;      /* still needed to prevent text wrapping */
 }
 
 .btn-outline:hover {

@@ -23,8 +23,6 @@
   box-sizing: border-box;
   max-width: 1200px;
   margin: auto;
-  flex-wrap: nowrap;        /* prevents rows wrapping */
-  gap: 12px;                /* consistent spacing between sections */
 }
 
 /* ─── Brand ─────────────────────────────────────────────────── */
@@ -33,7 +31,6 @@
   align-items: center;
   cursor: pointer;
   text-decoration: none;
-  flex-shrink: 0;           /* brand never shrinks */
 }
 
 /* ─── Luxury Title ──────────────────────────────────────────── */
@@ -61,22 +58,18 @@
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 4px;                 /* tightened so links don't crowd the Sign In button */
+  gap: 16px;
   align-items: center;
   margin: 0;
   padding: 0;
-  flex: 1;                  /* fills available space without overflowing */
-  flex-wrap: nowrap;        /* never wraps to a second row */
-  justify-content: center;
-  overflow: hidden;         /* prevents bleeding into CTA area */
 }
 
 .nav-link {
   text-decoration: none;
   color: #e5e7eb;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  padding: 8px 12px;
+  padding: 8px 18px;
   border-radius: 999px;
   transition: all 0.3s ease;
   background: none;
@@ -85,7 +78,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;      /* link text never wraps */
 }
 
 .nav-link:hover {
@@ -186,36 +178,11 @@
   padding-left: 24px;
 }
 
-/* ─── Desktop Dropdown SVG Icons ────────────────────────────── */
 .dropdown-item svg {
   flex-shrink: 0;
-  fill: #e5e7eb;            /* visible on dark #1a3a34 dropdown background */
-  width: 26px;
-  height: 26px;
-  display: block;
-  transition: fill 0.2s ease;
-}
-
-.dropdown-item svg path,
-.dropdown-item svg rect,
-.dropdown-item svg circle,
-.dropdown-item svg line,
-.dropdown-item svg polyline,
-.dropdown-item svg polygon {
-  fill: inherit;            /* cascades colour to all nested elements */
-}
-
-.dropdown-item:hover svg {
-  fill: #4ade80;            /* turns green on hover, matching text */
 }
 
 /* ─── Desktop CTA Button ────────────────────────────────────── */
-.nav-actions {
-  flex-shrink: 0;           /* Sign In container never gets squeezed */
-  display: flex;
-  align-items: center;
-}
-
 .btn-outline {
   font-family: 'Poppins', sans-serif;
   color: #ffffff;
@@ -225,10 +192,6 @@
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
-  white-space: nowrap;      /* "Sign In" never breaks onto two lines */
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
 }
 
 .btn-outline:hover {
@@ -251,7 +214,6 @@
   cursor: pointer;
   padding: 4px;
   z-index: 1100;
-  flex-shrink: 0;
 }
 
 .hamburger span {
@@ -275,7 +237,11 @@
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.4s ease;
+
+  /* Dark earthy safari base */
   background-color: #1a0f00;
+
+  /* African geometric SVG pattern overlay */
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpath d='M0 0 L30 0 L15 15 Z' fill='rgba(210,140,40,0.06)'/%3E%3Cpath d='M60 0 L30 0 L45 15 Z' fill='rgba(180,80,20,0.05)'/%3E%3Cpath d='M0 60 L30 60 L15 45 Z' fill='rgba(180,80,20,0.05)'/%3E%3Cpath d='M60 60 L30 60 L45 45 Z' fill='rgba(210,140,40,0.06)'/%3E%3Crect x='25' y='25' width='10' height='10' fill='none' stroke='rgba(210,140,40,0.08)' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='4' fill='none' stroke='rgba(210,140,40,0.07)' stroke-width='0.8'/%3E%3Cline x1='0' y1='30' x2='60' y2='30' stroke='rgba(210,140,40,0.04)' stroke-width='0.5'/%3E%3Cline x1='30' y1='0' x2='30' y2='60' stroke='rgba(210,140,40,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
   background-size: 60px 60px;
@@ -430,24 +396,7 @@
 }
 
 /* ─── Responsive Breakpoints ────────────────────────────────── */
-
-/* Intermediate: tighten links further before hamburger kicks in */
-@media (max-width: 960px) {
-  .nav-links {
-    gap: 2px;
-  }
-  .nav-link {
-    font-size: 0.85rem;
-    padding: 7px 9px;
-  }
-  .luxury-title {
-    font-size: 1.2rem;
-  }
-}
-
-/* Raised from 768px to 900px so hamburger takes over before
-   the layout ever crowds enough to squeeze the Sign In button */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .nav-links   { display: none; }
   .nav-actions { display: none; }
   .hamburger   { display: flex; }

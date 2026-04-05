@@ -59,6 +59,7 @@ const handleLogout = async () => {
           <li><router-link to="/blog">Blog</router-link></li>
           <li><router-link to="/faq">FAQ</router-link></li>
           <li><router-link to="/explore">Explore</router-link></li>
+          <li><router-link to="/policies">Policies</router-link></li>
                 
          
         </ul>

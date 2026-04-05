@@ -35,6 +35,7 @@ import SpecialRegistration from '@/views/SpecialRegistration.vue';
 import AuthCallback        from '@/views/AuthCallback.vue';
 import Blog                from '@/components/Blog.vue';
 import FAQ                 from '@/views/FAQ.vue';
+import Policies            from '@/views/Policies.vue';
 
 import AuthService  from '@/services/authService';
 import TokenService from '@/services/TokenService';
@@ -69,6 +70,7 @@ const routes = [
   { path: '/airport',         name: 'airport',           component: Airport,              meta: { requiresAuth: false } },
   { path: '/airportdetails',  name: 'airportdetails',    component: AirportDetails,       meta: { requiresAuth: false } },
   { path: '/faq',             name: 'faq',               component: FAQ,                  meta: { requiresAuth: false } },
+  { path: '/policies',        name: 'policies',          component: Policies,             meta: { requiresAuth: false } },
 
   /* ══════════════════════════════════════════════════════
      PROTECTED PAGES — requiresAuth: true

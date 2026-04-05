@@ -695,7 +695,7 @@ export default {
 }
 
 .footer-inner {
-  background-image: url('public/images/Nairobi-Kenyas-Capital-Cityscapes-Skylines-By-Antony-Trivet-Travel-Photographers-16.jpg');
+  background-image: url('/images/Nairobi-Kenyas-Capital-Cityscapes-Skylines-By-Antony-Trivet-Travel-Photographers-16.jpg');
   border-radius: 24px;
   padding: 2rem 2.5rem;
   text-align: center;

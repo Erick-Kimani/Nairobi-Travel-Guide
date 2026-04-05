@@ -367,7 +367,7 @@ export default {
   padding: 4rem 5vw 3rem;
   
   /* Image Implementation */
-  background-image: url('public/images/Nairobi-Kenyas-Capital-Cityscapes-Skylines-By-Antony-Trivet-Travel-Photographers-16.jpg');
+  background-image: url('/images/Nairobi-Kenyas-Capital-Cityscapes-Skylines-By-Antony-Trivet-Travel-Photographers-16.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
